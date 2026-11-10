@@ -120,9 +120,22 @@ section{padding:136px 0}
 .auto{background:linear-gradient(180deg,var(--card),#0b0b0b);border:1px solid var(--line);border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;transition:transform .25s,border-color .25s}
 .auto:hover{transform:translateY(-4px);border-color:rgba(212,21,47,.6)}
 .auto[hidden]{display:none}
-.auto .ph{aspect-ratio:16/9;display:grid;place-items:center;background:radial-gradient(60% 55% at 50% 70%,rgba(255,255,255,.06),transparent 70%);margin-bottom:10px}
-.auto .ph img{max-height:100%;width:auto;object-fit:contain;transition:transform .35s}
-.auto:hover .ph img{transform:scale(1.06) translateX(-4px)}
+/* Vitrina: fondo de exhibición, el auto sobre la plataforma y un vidrio por delante */
+.auto .ph{position:relative;aspect-ratio:16/9;margin:-6px -6px 14px;border-radius:12px;overflow:hidden;isolation:isolate;
+  background:url(../img/vitrina.webp) center/cover no-repeat #0c0c0e;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.auto .ph img{position:absolute;left:0;right:0;bottom:16.5%;margin:auto;width:60%;height:auto;z-index:1;transform-origin:50% 100%;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.auto[data-cat="suv"] .ph img{width:57%}
+.auto[data-cat="suvgrande"] .ph img{width:60%}
+.auto[data-cat="minivan"] .ph img{width:60%}
+.auto[data-cat="maxivan"] .ph img{width:56%}
+.auto .ph::before{content:"";position:absolute;left:20%;right:20%;bottom:13.5%;height:9%;z-index:1;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(0,0,0,.75),transparent)}
+.auto .ph::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:12px;
+  background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.10) 42%,rgba(255,255,255,.03) 50%,transparent 58%) -60% 0/220% 100% no-repeat,
+    linear-gradient(180deg,rgba(255,255,255,.07),transparent 18%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),inset 0 1px 0 rgba(255,255,255,.25);transition:background-position .9s ease}
+.auto:hover .ph img{transform:translateY(-2%) scale(1.04)}
+.auto:hover .ph::after{background-position:140% 0,0 0}
 .auto small{color:var(--muted);font-family:var(--font-title);font-weight:700;letter-spacing:.16em;font-size:.9rem;text-transform:uppercase}
 .auto h3{font-size:1.55rem;margin:.15em 0 .5em}
 .specs{list-style:none;padding:0;margin:0 0 16px;display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--muted);font-size:.85rem}
