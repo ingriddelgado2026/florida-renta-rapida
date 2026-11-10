@@ -6,6 +6,7 @@
   /* Textos del JavaScript en cada idioma */
   var TXT = EN ? {
     faltan: "Please complete all fields and accept the privacy policy.",
+    desde: "From", dia: "day",
     fechas: "The return date and time must be after pick-up.",
     entrega: "Pick-up", devolucion: "Return", pasajeros: "Passengers", mismo: "same as pick-up",
     abierto: "WhatsApp is open with your request. Just tap send.",
@@ -14,6 +15,7 @@
     sugerir: "¿Prefieres ver la página en español?", irA: "Ver en español", cerrar: "Cerrar"
   } : {
     faltan: "Completa los campos y acepta la política de privacidad.",
+    desde: "Desde", dia: "día",
     fechas: "La devolución tiene que ser después del retiro.",
     entrega: "Entrega", devolucion: "Devolución", pasajeros: "Pasajeros", mismo: "el mismo lugar de entrega",
     abierto: "Se abrió WhatsApp con tu solicitud. Solo tienes que enviarla.",
@@ -69,14 +71,39 @@
 
   /* "Reservar este" rellena el formulario */
   var form = $("#form-reserva");
+  var eleg = $("#elegido");
+  var mostrarElegido = function (b) {
+    if (!eleg) return;
+    $("img", eleg).src = b.dataset.img;
+    $("img", eleg).alt = b.dataset.reservar;
+    $(".elegido-nombre", eleg).textContent = b.dataset.reservar;
+    $(".elegido-cat", eleg).textContent = b.dataset.cat;
+    $(".elegido-precio", eleg).innerHTML = TXT.desde + " <b>$" + b.dataset.precio + "</b> /" + TXT.dia;
+    eleg.dataset.cat = b.dataset.cat; eleg.dataset.auto = b.dataset.reservar;
+    eleg.hidden = false;
+    eleg.classList.remove("llega"); void eleg.offsetWidth;
+    if (!reduce) setTimeout(function () { eleg.classList.add("llega"); }, 250);
+  };
+  /* si el visitante cambia la categoría o el vehículo a mano, se quita la vitrina */
+  if (form && eleg) {
+    form.categoria.addEventListener("change", function () { if (form.categoria.value !== eleg.dataset.cat) eleg.hidden = true; });
+    form.vehiculo.addEventListener("input", function () { if (form.vehiculo.value !== eleg.dataset.auto) eleg.hidden = true; });
+  }
   $$("[data-reservar]").forEach(function (b) {
     b.addEventListener("click", function (ev) {
       if (!form) return;
       ev.preventDefault();
       form.categoria.value = b.dataset.cat;
       form.vehiculo.value = b.dataset.reservar;
-      $("#reservar").scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
-      setTimeout(function () { form.nombre.focus({ preventScroll: true }); }, reduce ? 0 : 700);
+      /* el auto sale de su vitrina y aparece en la vitrina del formulario */
+      var foto = $(".ph img", b.closest(".auto"));
+      var ir = function () {
+        mostrarElegido(b);
+        $("#reservar").scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+        setTimeout(function () { form.nombre.focus({ preventScroll: true }); }, reduce ? 0 : 800);
+        if (foto) setTimeout(function () { foto.classList.remove("sale"); }, 900);
+      };
+      if (foto && !reduce) { foto.classList.add("sale"); setTimeout(ir, 380); } else ir();
     });
   });
 

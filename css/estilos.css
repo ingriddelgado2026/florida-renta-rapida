@@ -187,6 +187,25 @@ section{padding:136px 0}
 .form .check input{width:18px;height:18px;margin-top:3px;flex:none;accent-color:var(--accent)}
 .form .btn{justify-content:center;width:100%}
 .note{font-size:.82rem;color:var(--muted);margin:0}
+/* Auto elegido: baja de la flota al formulario */
+.elegido{display:grid;grid-template-columns:minmax(0,220px) 1fr;gap:18px;align-items:center;padding:10px;border:1px solid rgba(212,21,47,.45);border-radius:14px;background:#0b0b0e}
+.elegido[hidden]{display:none}
+.elegido-ph{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:url(../img/vitrina.webp) center/cover no-repeat #0c0c0e}
+.elegido-ph img{position:absolute;left:0;right:0;bottom:16.5%;margin:auto;width:60%;height:auto}
+.elegido.llega .elegido-ph img{animation:llegaAuto .8s cubic-bezier(.2,.8,.2,1) both}
+.elegido.llega{animation:brilla 1.2s ease-out}
+@keyframes llegaAuto{from{transform:translateX(-120%) scale(.9);opacity:0}to{transform:none;opacity:1}}
+@keyframes brilla{from{box-shadow:0 0 0 0 rgba(212,21,47,.55)}to{box-shadow:0 0 0 14px rgba(212,21,47,0)}}
+.elegido-txt{display:flex;flex-direction:column;gap:2px;min-width:0}
+.elegido-txt small{color:var(--muted);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase}
+.elegido-nombre{font-family:var(--font-title);font-size:1.6rem;font-weight:900;text-transform:uppercase;line-height:1.05}
+.elegido-cat{color:var(--soft);font-size:.88rem}
+.elegido-precio{font-size:.88rem;color:var(--muted)}
+.elegido-precio b{font-family:var(--font-title);font-size:1.4rem;color:#fff}
+.elegido-cambiar{margin-top:6px;font-size:.85rem;color:var(--soft);align-self:flex-start}
+/* el auto sale de su vitrina al tocar "Reservar este" */
+.auto .ph img.sale{animation:saleAuto .5s cubic-bezier(.5,0,.75,0) both}
+@keyframes saleAuto{to{transform:translateX(130%);opacity:0}}
 .steps{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:14px}
 .steps li{display:flex;gap:14px;align-items:flex-start;color:var(--soft)}
 .steps b{font-family:var(--font-title);flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#fff}
@@ -347,6 +366,7 @@ footer a:hover{color:#fff}
   .stats li:nth-child(3){border-left:0}
   .stats li:nth-child(n+3){border-top:1px solid var(--line)}
   .form{grid-template-columns:1fr;padding:20px}
+  .elegido{grid-template-columns:1fr 1fr;gap:12px}.elegido-nombre{font-size:1.25rem}
   .road{height:110px}
   .road .runner{width:150px}
 }
