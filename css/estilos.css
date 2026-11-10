@@ -200,6 +200,8 @@ footer a:hover{color:#fff}
 .legal .wrap{max-width:780px}
 .legal h1{font-size:clamp(2.6rem,6vw,4rem)}
 .legal h2{font-size:1.7rem;margin-top:1.8em}
+.legal h3{font-family:var(--font);text-transform:none;font-size:1.08rem;font-weight:700;letter-spacing:0;line-height:1.35;margin:1.5em 0 .4em;color:#fff}
+.legal ol{padding-left:1.4em}.legal li{margin-bottom:.45em}
 .legal p,.legal li{color:var(--soft)}
 .legal table{width:100%;border-collapse:collapse;font-size:.92rem}
 .legal th,.legal td{border:1px solid var(--line);padding:10px;text-align:left;vertical-align:top}
