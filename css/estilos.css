@@ -80,7 +80,13 @@ section{padding:136px 0}
 .hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 
 .stage{position:relative;width:min(860px,94vw,78vh);margin:2vh auto -3vh;z-index:1}
-.car{position:relative}
+.car{position:relative;z-index:1;animation:llega 1.2s cubic-bezier(.16,.84,.24,1) both}
+@keyframes llega{from{opacity:.15;transform:translateY(7%) scale(.84)}to{opacity:1;transform:none}}
+/* Dos autos más detrás del principal: aparecen un momento después */
+.atras{position:absolute;width:54%;bottom:23%;z-index:0;filter:brightness(.8);opacity:0;animation:atras 1s cubic-bezier(.2,.8,.2,1) .6s forwards}
+.atras-i{left:-27%;--dx:60px}
+.atras-d{right:-27%;--dx:-60px}
+@keyframes atras{from{opacity:0;transform:translateX(var(--dx)) scale(.9)}to{opacity:1;transform:none}}
 .car img{width:100%;height:auto}
 .floor{position:absolute;left:50%;bottom:-2%;width:96%;height:22%;transform:translateX(-50%);z-index:-1;
   background:radial-gradient(50% 50% at 50% 50%,rgba(0,0,0,.6),transparent 72%)}
@@ -299,7 +305,8 @@ footer a:hover{color:#fff}
 }
 @media (max-width:760px){
   section{padding:96px 0}
-  .hero{padding:96px 0 0}.stats,.confianza,.show,.ruta{padding:0}
+  .hero{padding:96px 0 0}
+  .atras{width:52%;bottom:24%}.atras-i{left:-14%}.atras-d{right:-14%}.stats,.confianza,.show,.ruta{padding:0}
   .menu-btn{display:block}
   .nav{position:fixed;inset:70px 0 auto 0;flex-direction:column;align-items:stretch;gap:0;background:rgba(0,0,0,.97);border-bottom:1px solid var(--line);padding:8px 16px 18px;transform:translateY(-120%);transition:transform .3s;visibility:hidden}
   .nav.open{transform:none;visibility:visible}
@@ -319,4 +326,5 @@ footer a:hover{color:#fff}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
   .reveal,.feat{opacity:1;transform:none}
+  .atras{opacity:1}
 }
