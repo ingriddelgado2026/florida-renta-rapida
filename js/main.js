@@ -98,6 +98,14 @@
     });
   });
 
+  /* Preguntas frecuentes: solo una abierta a la vez */
+  var faqs = $$(".faq-list details");
+  faqs.forEach(function (d) {
+    d.addEventListener("toggle", function () {
+      if (d.open) faqs.forEach(function (o) { if (o !== d && o.open) o.open = false; });
+    });
+  });
+
   /* "Reservar este" rellena el formulario */
   var form = $("#form-reserva");
   var eleg = $("#elegido");
