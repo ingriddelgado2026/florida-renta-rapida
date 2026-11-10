@@ -1,0 +1,4 @@
+Tipografías usadas en la web (licencia libre SIL Open Font License 1.1, permite uso comercial):
+- Big Shoulders Display (títulos, peso 900) — Patric King / Google Fonts — https://fonts.google.com/specimen/Big+Shoulders+Display
+- Instrument Sans (texto) — Instrument / Google Fonts — https://fonts.google.com/specimen/Instrument+Sans
+Licencia: https://openfontlicense.org

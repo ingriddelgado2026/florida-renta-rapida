@@ -1,0 +1,248 @@
+/* Florida Renta Rápida — JavaScript ligero, sin librerías */
+(function () {
+  "use strict";
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var EN = document.documentElement.lang === "en";
+  /* Textos del JavaScript en cada idioma */
+  var TXT = EN ? {
+    faltan: "Please complete all fields and accept the privacy policy.",
+    abierto: "WhatsApp is open with your request. Just tap send.",
+    saludo: "Hi, I'd like to book a car in Miami.",
+    nombre: "Name", categoria: "Category", vehiculo: "Vehicle", fecha: "Pick-up date", dias: "Days", pais: "Country", licencia: "Driver's license",
+    sugerir: "¿Prefieres ver la página en español?", irA: "Ver en español", cerrar: "Cerrar"
+  } : {
+    faltan: "Completa los campos y acepta la política de privacidad.",
+    abierto: "Se abrió WhatsApp con tu solicitud. Solo tienes que enviarla.",
+    saludo: "Hola, quiero reservar un auto en Miami.",
+    nombre: "Nombre", categoria: "Categoría", vehiculo: "Vehículo", fecha: "Fecha de retiro", dias: "Días", pais: "País", licencia: "Licencia de conducir",
+    sugerir: "Prefer to browse in English?", irA: "View in English", cerrar: "Close"
+  };
+  var $ = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+
+  /* Año del pie de página */
+  var y = $("#year"); if (y) y.textContent = new Date().getFullYear();
+
+  var clamp = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
+  var raiz = document.documentElement;
+
+  /* Menú móvil */
+  var mb = $(".menu-btn"), nav = $("#nav");
+  if (mb && nav) {
+    mb.addEventListener("click", function () {
+      var open = nav.classList.toggle("open");
+      mb.setAttribute("aria-expanded", open);
+    });
+    $$("a", nav).forEach(function (a) { a.addEventListener("click", function () { nav.classList.remove("open"); mb.setAttribute("aria-expanded", false); }); });
+  }
+
+  /* Animaciones de ambiente (lluvia, relámpagos, faros): arrancan cuando la página
+     ya cargó o cuando el visitante interactúa, para que la carga sea instantánea. */
+  if (!reduce) {
+    var heroEl = $(".hero");
+    var fx = function () { if (heroEl) heroEl.classList.add("fx"); };
+    ["pointermove", "touchstart", "scroll", "keydown"].forEach(function (ev) {
+      window.addEventListener(ev, fx, { once: true, passive: true });
+    });
+    window.addEventListener("load", function () { setTimeout(fx, 4000); });
+  }
+
+  /* Aparición al hacer scroll */
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+  }, { threshold: .15 });
+  $$(".reveal").forEach(function (el) { io.observe(el); });
+
+  /* Filtro de la flota */
+  var chips = $$(".chip");
+  chips.forEach(function (c) {
+    c.addEventListener("click", function () {
+      var f = c.dataset.f;
+      chips.forEach(function (o) { o.setAttribute("aria-pressed", o === c); });
+      $$(".auto").forEach(function (a) { a.hidden = !(f === "todos" || a.dataset.cat === f); });
+    });
+  });
+
+  /* "Reservar este" rellena el formulario */
+  var form = $("#form-reserva");
+  $$("[data-reservar]").forEach(function (b) {
+    b.addEventListener("click", function (ev) {
+      if (!form) return;
+      ev.preventDefault();
+      form.categoria.value = b.dataset.cat;
+      form.vehiculo.value = b.dataset.reservar;
+      $("#reservar").scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+      setTimeout(function () { form.nombre.focus({ preventScroll: true }); }, reduce ? 0 : 700);
+    });
+  });
+
+  /* ===== Efectos ligados al scroll =====
+     Las posiciones de las secciones se miden una sola vez (y otra vez solo si cambia el
+     tamaño de la página); en cada scroll solo se escriben estilos, sin volver a medir. */
+  var top = $("#top"), hayHero = !!$(".hero");
+  var road = $(".road"), runner = $(".road .runner"), feats = $$(".feat");
+  var show = reduce ? null : $(".show"), slides = $$(".slide"), dots = $$(".show-dots i");
+  var ruta = $(".ruta"), trail = $(".trail"), dot = $(".dot"), glow = $(".dot-glow"), pasos = $$(".pasos li");
+  var G = {}, L = 0, listo = false, pend = false;
+
+  var medir = function () {
+    var sy = window.scrollY;
+    G.vh = window.innerHeight; G.vw = window.innerWidth;
+    var arriba = function (el) { return el.getBoundingClientRect().top + sy; };
+    if (road && runner) { G.roadTop = arriba(road); G.roadW = road.clientWidth; G.runW = runner.offsetWidth; }
+    if (show) { G.showTop = arriba(show); G.showLen = show.offsetHeight - G.vh; }
+    if (ruta) { G.rutaTop = arriba(ruta); G.rutaLen = ruta.offsetHeight - G.vh; }
+  };
+  var cerca = function (t, len, sy) { return sy > t - G.vh * 1.2 && sy < t + len + G.vh * 1.2; };
+  var avance = function (t, len, sy) { return len > 0 ? clamp((sy - t) / len, 0, 1) : 0; };
+
+  var pintar = function () {
+    pend = false;
+    var sy = window.scrollY;
+    if (top) top.classList.toggle("solid", sy > 40 || !hayHero);
+    if (!listo) return;
+
+    if (road && runner && cerca(G.roadTop, 0, sy)) {
+      var p = clamp((sy + G.vh - G.roadTop) / (G.vh * .9), 0, 1);
+      runner.style.transform = "translate(" + (-G.runW + p * (G.roadW + G.runW * .2)) + "px,-55%)";
+      var lit = Math.floor(p * (feats.length + .5));
+      feats.forEach(function (f, i) { f.classList.toggle("on", reduce || i < lit); });
+    }
+
+    if (show && slides.length && cerca(G.showTop, G.showLen, sy)) {
+      var n = slides.length, q = avance(G.showTop, G.showLen, sy) * (n - 1);
+      slides.forEach(function (s, i) {
+        var d = q - i, a = clamp(1 - Math.abs(d) * 1.6, 0, 1);
+        var big = s.children[0], img = s.children[1], txt = s.children[2];
+        img.style.transform = "translateX(" + (-d * G.vw * .55) + "px) rotate(" + (-d * 4) + "deg) scale(" + (1 - Math.abs(d) * .15) + ")";
+        img.style.opacity = a;
+        txt.style.transform = "translateY(" + (d * 60) + "px)";
+        txt.style.opacity = clamp(1 - Math.abs(d) * 2.6, 0, 1);
+        big.style.transform = "translate(calc(-50% + " + (-d * G.vw * .25) + "px),-50%)";
+        big.style.opacity = a;
+        s.classList.toggle("act", Math.abs(d) < .5);
+      });
+      var cur = Math.round(q);
+      dots.forEach(function (d, i) { d.classList.toggle("on", i === cur); });
+    }
+
+    if (ruta && trail && L && (reduce || cerca(G.rutaTop, G.rutaLen, sy))) {
+      var r = reduce ? 1 : clamp(avance(G.rutaTop, G.rutaLen, sy) * 1.15, 0, 1);
+      trail.style.strokeDashoffset = L * (1 - r);
+      var pt = trail.getPointAtLength(L * r);
+      dot.setAttribute("cx", pt.x); dot.setAttribute("cy", pt.y);
+      glow.setAttribute("cx", pt.x); glow.setAttribute("cy", pt.y);
+      pasos.forEach(function (li, i) { li.classList.toggle("on", r >= i / pasos.length + .02 || r === 1); });
+    }
+  };
+  var pedir = function () { if (!pend) { pend = true; requestAnimationFrame(pintar); } };
+  window.addEventListener("scroll", pedir, { passive: true });
+  pintar();
+
+  /* Mide las secciones y activa los efectos */
+  var iniciar = function () {
+    if (trail) { L = trail.getTotalLength(); trail.style.strokeDasharray = L; trail.style.strokeDashoffset = L; }
+    medir(); listo = true; pintar();
+    if (window.ResizeObserver) {
+      var t;
+      new ResizeObserver(function () { clearTimeout(t); t = setTimeout(function () { medir(); pedir(); }, 100); }).observe(document.body);
+    } else {
+      window.addEventListener("resize", function () { medir(); pedir(); });
+    }
+  };
+  /* Las secciones con scroll están más abajo: se preparan con el primer scroll o toque */
+  var arrancado = false;
+  var arrancar = function () {
+    if (arrancado) return; arrancado = true;
+    /* fotos de "Un auto para cada viaje": se piden recién ahora */
+    $$("img[data-src]").forEach(function (i) { i.src = i.dataset.src; i.removeAttribute("data-src"); });
+    if (window.requestIdleCallback) requestIdleCallback(iniciar, { timeout: 300 }); else setTimeout(iniciar, 50);
+  };
+  ["scroll", "touchstart", "keydown"].forEach(function (ev) {
+    window.addEventListener(ev, arrancar, { once: true, passive: true });
+  });
+  if (window.scrollY > 0) arrancar();
+
+  /* Formulario -> WhatsApp (no guarda datos en el servidor) */
+  if (form) {
+    var hoy = new Date(); hoy.setMinutes(hoy.getMinutes() - hoy.getTimezoneOffset());
+    form.fecha.min = hoy.toISOString().slice(0, 10);
+    form.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var msg = $("#form-msg");
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        msg.textContent = TXT.faltan;
+        return;
+      }
+      var f = form.elements;
+      var texto = [
+        TXT.saludo,
+        "*" + TXT.nombre + ":* " + f.nombre.value,
+        "*" + TXT.categoria + ":* " + f.categoria.value,
+        f.vehiculo.value ? "*" + TXT.vehiculo + ":* " + f.vehiculo.value : "",
+        "*" + TXT.fecha + ":* " + f.fecha.value,
+        "*" + TXT.dias + ":* " + f.dias.value,
+        "*" + TXT.pais + ":* " + f.pais.value,
+        "*" + TXT.licencia + ":* " + f.licencia.value
+      ].filter(Boolean).map(encodeURIComponent).join("%0A");
+      window.open("https://wa.me/" + window.WA_NUMERO + "?text=" + texto, "_blank", "noopener");
+      msg.textContent = TXT.abierto;
+    });
+  }
+
+  /* ===== Aviso de cookies =====
+     Hoy la página solo usa almacenamiento técnico (recordar tu elección).
+     Si en el futuro agregas Google Analytics o el Píxel de Meta, ponlos dentro de
+     cargarMedicion(): solo se ejecutará si el visitante acepta. */
+  var KEY = "ast-cookies";
+  var banner = $("#cookie-banner");
+  var leer = function () { try { return localStorage.getItem(KEY); } catch (e) { return null; } };
+  var guardar = function (v) { try { localStorage.setItem(KEY, v); } catch (e) {} };
+  function cargarMedicion() {
+    /* Ejemplo (desactivado):
+       var s = document.createElement("script");
+       s.src = "https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"; s.async = true;
+       document.head.appendChild(s); */
+  }
+  var elegir = function (v) { guardar(v); if (banner) banner.hidden = true; if (v === "todas") cargarMedicion(); };
+  if (banner) {
+    var c = leer();
+    if (!c) banner.hidden = false; else if (c === "todas") cargarMedicion();
+    $$("[data-cookie]", banner).forEach(function (b) { b.addEventListener("click", function () { elegir(b.dataset.cookie); }); });
+  }
+  $$("[data-cookie-settings]").forEach(function (b) {
+    b.addEventListener("click", function () { if (banner) { banner.hidden = false; var x = $("[data-cookie]", banner); if (x) x.focus(); } });
+  });
+
+  /* ===== Idioma =====
+     Recuerda el idioma elegido con el botón ES | EN y, la primera vez,
+     sugiere el otro idioma si el navegador del visitante está en ese idioma. */
+  var LKEY = "ast-lang";
+  var lget = function () { try { return localStorage.getItem(LKEY); } catch (e) { return null; } };
+  var lset = function (v) { try { localStorage.setItem(LKEY, v); } catch (e) {} };
+  var actual = EN ? "en" : "es";
+  var cambio = $(".lang");
+  if (cambio) cambio.addEventListener("click", function () { lset(cambio.dataset.lang); });
+  var nav0 = (navigator.language || "es").slice(0, 2).toLowerCase();
+  var otro = EN ? "es" : "en";
+  var sugerir = function () {
+    var bar = document.createElement("div");
+    bar.className = "lang-bar"; bar.setAttribute("role", "region"); bar.setAttribute("aria-label", TXT.sugerir);
+    var t = document.createElement("span"); t.textContent = TXT.sugerir;
+    var ir = document.createElement("a"); ir.className = "btn btn-accent"; ir.textContent = TXT.irA; ir.href = cambio.getAttribute("href");
+    ir.addEventListener("click", function () { lset(otro); });
+    var x = document.createElement("button"); x.type = "button"; x.className = "lang-x"; x.textContent = "\u00d7"; x.setAttribute("aria-label", TXT.cerrar);
+    x.addEventListener("click", function () { lset(actual); bar.hidden = true; });
+    bar.appendChild(t); bar.appendChild(ir); bar.appendChild(x);
+    document.body.appendChild(bar);
+  };
+  /* La sugerencia aparece cuando el visitante empieza a usar la página (no frena la carga) */
+  if (cambio && !lget() && nav0 === otro) {
+    var sugerido = false;
+    var una = function () { if (!sugerido) { sugerido = true; sugerir(); } };
+    ["scroll", "pointermove", "touchstart", "keydown"].forEach(function (ev) {
+      window.addEventListener(ev, una, { once: true, passive: true });
+    });
+  }
+})();
