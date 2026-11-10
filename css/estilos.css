@@ -344,6 +344,8 @@ footer a:hover{color:#fff}
 
 /* Rendimiento: no dibujar las secciones de abajo hasta que hagan falta */
 #flota,#incluye,#preguntas,#reservar,#contacto,footer{content-visibility:auto;contain-intrinsic-size:auto 900px}
+.cv-off #flota,.cv-off #incluye,.cv-off #preguntas,.cv-off #reservar,.cv-off #contacto,.cv-off footer{content-visibility:visible}
+#form-reserva{scroll-margin-top:86px}
 .sr{white-space:nowrap}
 
 /* Responsive */

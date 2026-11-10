@@ -69,6 +69,35 @@
     });
   });
 
+  /* Saltos dentro de la página que llegan exacto: primero se dibujan las secciones
+     que el navegador deja para después (así no calcula mal las alturas) y al terminar
+     se corrige la posición si quedó corta. */
+  var irA = function (el) {
+    if (!el) return;
+    raiz.classList.add("cv-off");
+    requestAnimationFrame(function () {
+      el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+      var listo = false;
+      var fijar = function () {
+        if (listo) return; listo = true;
+        var margen = parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
+        if (Math.abs(el.getBoundingClientRect().top - margen) > 8) el.scrollIntoView({ behavior: "auto", block: "start" });
+      };
+      window.addEventListener("scrollend", fijar, { once: true });
+      setTimeout(fijar, reduce ? 60 : 1300);
+    });
+  };
+  $$('a[href^="#"]').forEach(function (a) {
+    var id = a.getAttribute("href");
+    if (id.length < 2 || a.hasAttribute("data-reservar")) return;
+    var destino = document.getElementById(id.slice(1));
+    if (!destino || destino.closest("svg")) return;
+    a.addEventListener("click", function (ev) {
+      ev.preventDefault();
+      irA(id === "#reservar" ? ($("#form-reserva") || destino) : destino);
+    });
+  });
+
   /* "Reservar este" rellena el formulario */
   var form = $("#form-reserva");
   var eleg = $("#elegido");
@@ -99,7 +128,7 @@
       var foto = $(".ph img", b.closest(".auto"));
       var ir = function () {
         mostrarElegido(b);
-        $("#reservar").scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+        irA(form);
         setTimeout(function () { form.nombre.focus({ preventScroll: true }); }, reduce ? 0 : 800);
         if (foto) setTimeout(function () { foto.classList.remove("sale"); }, 900);
       };
