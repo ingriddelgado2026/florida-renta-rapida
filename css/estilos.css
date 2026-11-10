@@ -122,6 +122,7 @@ section{padding:136px 0}
 .specs{list-style:none;padding:0;margin:0 0 16px;display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--muted);font-size:.85rem}
 .specs li{display:flex;align-items:center;gap:5px}
 .specs svg{width:16px;height:16px;opacity:.8}
+.auto .sim{margin:-.35em 0 .7em;font-size:.8rem;color:var(--muted)}
 .auto .btn{margin-top:auto;justify-content:center;padding:.7em 1em;font-size:.92rem;background:transparent;border:1px solid var(--line);color:var(--text)}
 .auto .btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
 
