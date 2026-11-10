@@ -182,7 +182,7 @@ section{padding:136px 0}
 .steps b{font-family:var(--font-title);flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#fff}
 
 /* Contacto */
-.contacto .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:28px}
+.contacto .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-top:28px}
 .cbox{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
 .cbox span{color:var(--muted);font-size:.85rem;display:block}
 .cbox a{color:var(--text);font-weight:700;font-size:1.1rem;text-decoration:none;word-break:break-word}
