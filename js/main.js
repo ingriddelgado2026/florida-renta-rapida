@@ -8,6 +8,7 @@
     faltan: "Please complete all fields and accept the privacy policy.",
     desde: "From", dia: "day",
     fechas: "The return date and time must be after pick-up.",
+    fechaMal: "Enter a valid date (month/day/year).", fechaPasada: "Choose a date from today on.",
     entrega: "Pick-up", devolucion: "Return", pasajeros: "Passengers", mismo: "same as pick-up",
     abierto: "WhatsApp is open with your request. Just tap send.",
     saludo: "Hi, I'd like to book a car in Miami.",
@@ -17,6 +18,7 @@
     faltan: "Completa los campos y acepta la política de privacidad.",
     desde: "Desde", dia: "día",
     fechas: "La devolución tiene que ser después del retiro.",
+    fechaMal: "Escribe una fecha válida (mes/día/año).", fechaPasada: "Elige una fecha desde hoy.",
     entrega: "Entrega", devolucion: "Devolución", pasajeros: "Pasajeros", mismo: "el mismo lugar de entrega",
     abierto: "Se abrió WhatsApp con tu solicitud. Solo tienes que enviarla.",
     saludo: "Hola, quiero reservar un auto en Miami.",
@@ -245,12 +247,38 @@
       };
       sel.addEventListener("change", ver); ver();
     });
+    /* Fechas en formato de EE. UU. (mm/dd/aaaa): se escriben a mano o se eligen en el calendario */
+    var aISO = function (t) {
+      var m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(t); if (!m) return "";
+      var d = new Date(+m[3], +m[1] - 1, +m[2]);
+      return (d.getMonth() === +m[1] - 1 && d.getDate() === +m[2]) ? m[3] + "-" + m[1] + "-" + m[2] : "";
+    };
+    var aTexto = function (v) { var p = v.split("-"); return p[1] + "/" + p[2] + "/" + p[0]; };
+    ["fecha", "fecha_dev"].forEach(function (n) {
+      var txt = form[n + "_txt"], oculta = form[n], cal = txt.parentNode.querySelector(".fecha-cal");
+      var revisar = function () {
+        var v = aISO(txt.value);
+        txt.setCustomValidity(txt.value.length === 10 && !v ? TXT.fechaMal : (v && oculta.min && v < oculta.min ? TXT.fechaPasada : ""));
+        if (oculta.value !== v) { oculta.value = v; oculta.dispatchEvent(new Event("change")); }
+      };
+      txt.addEventListener("input", function () {
+        var d = txt.value.replace(/\D/g, "").slice(0, 8);
+        txt.value = d.length > 4 ? d.slice(0, 2) + "/" + d.slice(2, 4) + "/" + d.slice(4) : d.length > 2 ? d.slice(0, 2) + "/" + d.slice(2) : d;
+        revisar();
+      });
+      oculta.addEventListener("change", function () {
+        if (oculta.value && aISO(txt.value) !== oculta.value) { txt.value = aTexto(oculta.value); revisar(); }
+      });
+      cal.addEventListener("click", function () {
+        try { oculta.showPicker(); } catch (e) { txt.focus(); }
+      });
+    });
     form.fecha.addEventListener("change", function () {
       form.fecha_dev.min = form.fecha.value || iso;
-      if (form.fecha_dev.value && form.fecha_dev.value < form.fecha.value) form.fecha_dev.value = "";
+      if (form.fecha_dev.value && form.fecha_dev.value < form.fecha.value) { form.fecha_dev.value = ""; form.fecha_dev_txt.value = ""; }
     });
-    /* fecha en el formato de cada idioma: 20/11/2026 o 11/20/2026 */
-    var fmt = function (v) { var p = v.split("-"); return EN ? p[1] + "/" + p[2] + "/" + p[0] : p[2] + "/" + p[1] + "/" + p[0]; };
+    /* fecha en el formato de EE. UU. en los dos idiomas: 11/20/2026 */
+    var fmt = function (v) { var p = v.split("-"); return p[1] + "/" + p[2] + "/" + p[0]; };
     var lugar = function (sel, det) { return sel.value + (det.value ? " (" + det.value + ")" : ""); };
     form.addEventListener("submit", function (ev) {
       ev.preventDefault();
@@ -262,7 +290,7 @@
       }
       var f = form.elements;
       var ini = new Date(f.fecha.value + "T" + f.hora.value), fin = new Date(f.fecha_dev.value + "T" + f.hora_dev.value);
-      if (!(fin > ini)) { msg.textContent = TXT.fechas; f.fecha_dev.focus(); return; }
+      if (!(fin > ini)) { msg.textContent = TXT.fechas; f.fecha_dev_txt.focus(); return; }
       var dias = Math.max(1, Math.ceil((fin - ini) / 864e5));
       var dev = f.devolucion.selectedIndex === 0 ? TXT.mismo : lugar(f.devolucion, f.devolucion_detalle);
       var texto = [

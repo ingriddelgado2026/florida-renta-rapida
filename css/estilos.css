@@ -179,6 +179,13 @@ section{padding:136px 0}
 .form label{display:flex;flex-direction:column;gap:6px;font-size:.88rem;font-weight:600;color:var(--soft)}
 .form .full{grid-column:1/-1}
 .form [data-detalle-de]{grid-column:1/-1}
+/* Fecha en formato de EE. UU. (mm/dd/aaaa) con botón de calendario */
+.fecha-campo{position:relative;display:block}
+.form .fecha-campo input[type=text]{padding-right:3em}
+.fecha-cal{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:2.4em;height:2.4em;border:0;border-radius:8px;background:transparent;color:var(--soft);cursor:pointer;display:grid;place-items:center}
+.fecha-cal:hover{color:#fff;background:rgba(255,255,255,.06)}
+.fecha-cal svg{width:20px;height:20px}
+.form .fecha-oculta{position:absolute;right:0;bottom:0;width:1px;height:1px;padding:0;border:0;opacity:0;pointer-events:none}
 .form label[hidden]{display:none}
 .form input[type=time]{min-height:2.9em}
 .form input,.form select{font:inherit;color:var(--text);background:#0a0a0a;border:1px solid var(--line);border-radius:10px;padding:.75em .9em;width:100%}
