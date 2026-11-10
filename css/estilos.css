@@ -53,7 +53,7 @@ section{padding:136px 0}
 .top.solid{background:rgba(0,0,0,.95);border-color:var(--line)}
 .top .wrap{display:flex;align-items:center;justify-content:space-between;height:70px;gap:16px}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff}
-.logo-mark{width:6px;height:30px;background:var(--red);transform:skewX(-18deg);flex:none}
+.logo-emblema{height:38px;width:auto;flex:none}
 .logo-txt{font-family:var(--font-title);font-weight:900;text-transform:uppercase;font-size:1.3rem;letter-spacing:.04em;line-height:1;font-style:italic}
 .logo-txt b{color:var(--red);font-weight:900}
 .nav{display:flex;gap:26px;align-items:center}
@@ -175,6 +175,9 @@ section{padding:136px 0}
 .form{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .form label{display:flex;flex-direction:column;gap:6px;font-size:.88rem;font-weight:600;color:var(--soft)}
 .form .full{grid-column:1/-1}
+.form [data-detalle-de]{grid-column:1/-1}
+.form label[hidden]{display:none}
+.form input[type=time]{min-height:2.9em}
 .form input,.form select{font:inherit;color:var(--text);background:#0a0a0a;border:1px solid var(--line);border-radius:10px;padding:.75em .9em;width:100%}
 .form input:focus,.form select:focus{outline:2px solid #fff;outline-offset:1px;border-color:transparent}
 .form .check{flex-direction:row;align-items:flex-start;gap:10px;font-weight:400;color:var(--muted)}
@@ -196,6 +199,8 @@ section{padding:136px 0}
 footer{border-top:1px solid var(--line);padding:40px 0 90px;color:var(--muted);font-size:.9rem}
 footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:center}
 footer nav{display:flex;gap:18px;flex-wrap:wrap}
+.pie-marca{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.pie-marca img{width:150px;height:auto}
 footer a{color:var(--muted)}
 footer a:hover{color:#fff}
 .linkbtn{background:none;border:0;padding:0;color:var(--muted);text-decoration:underline;cursor:pointer;font:inherit}
@@ -328,6 +333,7 @@ footer a:hover{color:#fff}
 @media (max-width:760px){
   section{padding:96px 0}
   .hero{padding:96px 0 0}
+  .logo-emblema{height:30px}.logo-txt{font-size:1.12rem}
   .atras{width:52%;bottom:26%}.atras-i{left:-14%}.atras-d{right:-14%}.stats,.confianza,.show,.ruta{padding:0}
   .menu-btn{display:block}
   .nav{position:fixed;inset:70px 0 auto 0;flex-direction:column;align-items:stretch;gap:0;background:rgba(0,0,0,.97);border-bottom:1px solid var(--line);padding:8px 16px 18px;transform:translateY(-120%);transition:transform .3s;visibility:hidden}

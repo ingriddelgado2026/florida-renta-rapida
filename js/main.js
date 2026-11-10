@@ -6,12 +6,16 @@
   /* Textos del JavaScript en cada idioma */
   var TXT = EN ? {
     faltan: "Please complete all fields and accept the privacy policy.",
+    fechas: "The return date and time must be after pick-up.",
+    entrega: "Pick-up", devolucion: "Return", pasajeros: "Passengers", mismo: "same as pick-up",
     abierto: "WhatsApp is open with your request. Just tap send.",
     saludo: "Hi, I'd like to book a car in Miami.",
     nombre: "Name", categoria: "Category", vehiculo: "Vehicle", fecha: "Pick-up date", dias: "Days", pais: "Country", licencia: "Driver's license",
     sugerir: "¿Prefieres ver la página en español?", irA: "Ver en español", cerrar: "Cerrar"
   } : {
     faltan: "Completa los campos y acepta la política de privacidad.",
+    fechas: "La devolución tiene que ser después del retiro.",
+    entrega: "Entrega", devolucion: "Devolución", pasajeros: "Pasajeros", mismo: "el mismo lugar de entrega",
     abierto: "Se abrió WhatsApp con tu solicitud. Solo tienes que enviarla.",
     saludo: "Hola, quiero reservar un auto en Miami.",
     nombre: "Nombre", categoria: "Categoría", vehiculo: "Vehículo", fecha: "Fecha de retiro", dias: "Días", pais: "País", licencia: "Licencia de conducir",
@@ -166,7 +170,24 @@
   /* Formulario -> WhatsApp (no guarda datos en el servidor) */
   if (form) {
     var hoy = new Date(); hoy.setMinutes(hoy.getMinutes() - hoy.getTimezoneOffset());
-    form.fecha.min = hoy.toISOString().slice(0, 10);
+    var iso = hoy.toISOString().slice(0, 10);
+    form.fecha.min = iso; form.fecha_dev.min = iso;
+    /* "Hotel" u "Otra dirección" muestran el campo para escribirla */
+    ["entrega", "devolucion"].forEach(function (n) {
+      var sel = form[n], lab = $('[data-detalle-de="' + n + '"]', form), inp = lab && $("input", lab);
+      var ver = function () {
+        var o = sel.options[sel.selectedIndex], si = !!(o && o.hasAttribute("data-detalle"));
+        lab.hidden = !si; inp.required = si; if (!si) inp.value = "";
+      };
+      sel.addEventListener("change", ver); ver();
+    });
+    form.fecha.addEventListener("change", function () {
+      form.fecha_dev.min = form.fecha.value || iso;
+      if (form.fecha_dev.value && form.fecha_dev.value < form.fecha.value) form.fecha_dev.value = "";
+    });
+    /* fecha en el formato de cada idioma: 20/11/2026 o 11/20/2026 */
+    var fmt = function (v) { var p = v.split("-"); return EN ? p[1] + "/" + p[2] + "/" + p[0] : p[2] + "/" + p[1] + "/" + p[0]; };
+    var lugar = function (sel, det) { return sel.value + (det.value ? " (" + det.value + ")" : ""); };
     form.addEventListener("submit", function (ev) {
       ev.preventDefault();
       var msg = $("#form-msg");
@@ -176,13 +197,19 @@
         return;
       }
       var f = form.elements;
+      var ini = new Date(f.fecha.value + "T" + f.hora.value), fin = new Date(f.fecha_dev.value + "T" + f.hora_dev.value);
+      if (!(fin > ini)) { msg.textContent = TXT.fechas; f.fecha_dev.focus(); return; }
+      var dias = Math.max(1, Math.ceil((fin - ini) / 864e5));
+      var dev = f.devolucion.selectedIndex === 0 ? TXT.mismo : lugar(f.devolucion, f.devolucion_detalle);
       var texto = [
         TXT.saludo,
         "*" + TXT.nombre + ":* " + f.nombre.value,
         "*" + TXT.categoria + ":* " + f.categoria.value,
         f.vehiculo.value ? "*" + TXT.vehiculo + ":* " + f.vehiculo.value : "",
-        "*" + TXT.fecha + ":* " + f.fecha.value,
-        "*" + TXT.dias + ":* " + f.dias.value,
+        "*" + TXT.entrega + ":* " + lugar(f.entrega, f.entrega_detalle) + " · " + fmt(f.fecha.value) + " " + f.hora.value,
+        "*" + TXT.devolucion + ":* " + dev + " · " + fmt(f.fecha_dev.value) + " " + f.hora_dev.value,
+        "*" + TXT.dias + ":* " + dias,
+        "*" + TXT.pasajeros + ":* " + f.pasajeros.value,
         "*" + TXT.pais + ":* " + f.pais.value,
         "*" + TXT.licencia + ":* " + f.licencia.value
       ].filter(Boolean).map(encodeURIComponent).join("%0A");
