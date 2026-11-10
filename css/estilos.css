@@ -115,7 +115,9 @@ section{padding:136px 0}
 .confianza li{display:flex;align-items:center;gap:10px}
 .confianza svg{width:18px;height:18px;color:#fff;flex:none}
 .confianza .pagos{display:flex;gap:6px}
-.confianza .pagos span{border:1px solid var(--line);border-radius:6px;padding:2px 8px;color:#fff;font-size:.78rem;letter-spacing:.04em}
+.confianza .pagos{gap:8px}
+.confianza .tarjeta{display:inline-flex;width:46px;height:30px;background:#fff;border-radius:6px;box-shadow:0 1px 0 rgba(255,255,255,.15),0 4px 10px rgba(0,0,0,.4)}
+.confianza .tarjeta svg{width:100%;height:100%;color:initial}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
 .chip{background:var(--card);color:var(--muted);border:1px solid var(--line);padding:.55em 1.1em;border-radius:999px;font-weight:600;cursor:pointer;font-size:.9rem;font-family:inherit}
 .chip:hover{color:#fff;border-color:var(--red)}
