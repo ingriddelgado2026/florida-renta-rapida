@@ -1,6 +1,9 @@
 /* Florida Renta Rápida — estilos (sin librerías externas) */
 /* Tipografías propias (alojadas en /fonts, sin conectar con Google) */
 @font-face{font-family:"Big Shoulders Display";src:url(../fonts/titulos-900.woff2) format("woff2");font-weight:700 900;font-display:swap}
+/* Letra de respaldo con las medidas de Instrument Sans: el texto no salta cuando carga la tipografía */
+@font-face{font-family:"IS Respaldo";src:local("Arial"),local("ArialMT");font-weight:400;size-adjust:101.9%;ascent-override:95.2%;descent-override:24.5%;line-gap-override:0%}
+@font-face{font-family:"IS Respaldo";src:local("Arial Bold"),local("Arial-BoldMT");font-weight:500 900;size-adjust:99.2%;ascent-override:97.8%;descent-override:25.2%;line-gap-override:0%}
 @font-face{font-family:"Instrument Sans";src:url(../fonts/texto-400.woff2) format("woff2");font-weight:400;font-display:swap}
 @font-face{font-family:"Instrument Sans";src:url(../fonts/texto-700.woff2) format("woff2");font-weight:500 900;font-display:swap}
 :root{
@@ -17,7 +20,7 @@
   --wa:#25d366;
   --radius:16px;
   --max:1180px;
-  --font:"Instrument Sans",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --font:"Instrument Sans","IS Respaldo",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
   --font-title:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
 }
 *{box-sizing:border-box}
@@ -68,7 +71,7 @@ section{padding:136px 0}
 @media (max-width:760px){
   .hero{background:
     linear-gradient(to bottom,rgba(0,0,0,.62) 0%,rgba(0,0,0,.45) 38%,rgba(0,0,0,.1) 60%,rgba(0,0,0,.25) 85%,#000 100%),
-    url(../img/fondo-movil-dia.webp) center 40%/cover no-repeat #000}
+    url(../img/fondo-movil-dia2.webp) center 40%/cover no-repeat #000}
 }
 .hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-3}
 .hero-copy{position:relative;z-index:2;text-align:center;margin-bottom:-2vh}
@@ -80,10 +83,10 @@ section{padding:136px 0}
 .hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 
 .stage{position:relative;width:min(860px,94vw,78vh);margin:2vh auto -3vh;z-index:1}
-.car{position:relative;z-index:1;animation:llega 1.2s cubic-bezier(.16,.84,.24,1) both}
-@keyframes llega{from{opacity:.15;transform:translateY(7%) scale(.84)}to{opacity:1;transform:none}}
+.car{position:relative;z-index:1;animation:llega .8s cubic-bezier(.16,.84,.24,1) both}
+@keyframes llega{from{opacity:.4;transform:translateY(6%) scale(.86)}to{opacity:1;transform:none}}
 /* Dos autos más detrás del principal: aparecen un momento después */
-.atras{position:absolute;width:54%;bottom:23%;z-index:0;filter:brightness(.8);opacity:0;animation:atras 1s cubic-bezier(.2,.8,.2,1) .6s forwards}
+.atras{position:absolute;width:54%;bottom:25%;z-index:0;opacity:0;animation:atras .7s cubic-bezier(.2,.8,.2,1) .35s forwards}
 .atras-i{left:-27%;--dx:60px}
 .atras-d{right:-27%;--dx:-60px}
 @keyframes atras{from{opacity:0;transform:translateX(var(--dx)) scale(.9)}to{opacity:1;transform:none}}
@@ -321,7 +324,7 @@ footer a:hover{color:#fff}
 @media (max-width:760px){
   section{padding:96px 0}
   .hero{padding:96px 0 0}
-  .atras{width:52%;bottom:24%}.atras-i{left:-14%}.atras-d{right:-14%}.stats,.confianza,.show,.ruta{padding:0}
+  .atras{width:52%;bottom:26%}.atras-i{left:-14%}.atras-d{right:-14%}.stats,.confianza,.show,.ruta{padding:0}
   .menu-btn{display:block}
   .nav{position:fixed;inset:70px 0 auto 0;flex-direction:column;align-items:stretch;gap:0;background:rgba(0,0,0,.97);border-bottom:1px solid var(--line);padding:8px 16px 18px;transform:translateY(-120%);transition:transform .3s;visibility:hidden}
   .nav.open{transform:none;visibility:visible}
