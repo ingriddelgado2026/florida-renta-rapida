@@ -2,6 +2,7 @@
 /* Tipografías propias (alojadas en /fonts, sin conectar con Google) */
 @font-face{font-family:"Big Shoulders Display";src:url(../fonts/titulos-900.woff2) format("woff2");font-weight:700 900;font-display:swap}
 /* Letra de respaldo con las medidas de Instrument Sans: el texto no salta cuando carga la tipografía */
+@font-face{font-family:"BS Respaldo";src:local("Impact");size-adjust:95%;ascent-override:103.6%;descent-override:22.4%;line-gap-override:0%}
 @font-face{font-family:"IS Respaldo";src:local("Arial"),local("ArialMT");font-weight:400;size-adjust:101.9%;ascent-override:95.2%;descent-override:24.5%;line-gap-override:0%}
 @font-face{font-family:"IS Respaldo";src:local("Arial Bold"),local("Arial-BoldMT");font-weight:500 900;size-adjust:99.2%;ascent-override:97.8%;descent-override:25.2%;line-gap-override:0%}
 @font-face{font-family:"Instrument Sans";src:url(../fonts/texto-400.woff2) format("woff2");font-weight:400;font-display:swap}
@@ -21,7 +22,7 @@
   --radius:16px;
   --max:1180px;
   --font:"Instrument Sans","IS Respaldo",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-  --font-title:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --font-title:"Big Shoulders Display","BS Respaldo","Arial Narrow",Impact,sans-serif;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
