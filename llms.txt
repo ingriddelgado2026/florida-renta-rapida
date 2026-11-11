@@ -1,0 +1,38 @@
+# Florida Renta Rápida
+
+> Alquiler de autos en Florida (Miami, Fort Lauderdale y Orlando), operado por Clubs Enterprise, LLC. Vehículos del año, automáticos y con aire acondicionado, con rastreo satelital y asistencia 24/7. Las reservas se hacen por WhatsApp. Car rental in Florida; bookings via WhatsApp, service in Spanish and English.
+
+- Oficina: 2175 NW 34th Ave, Miami, FL 33142, United States
+- WhatsApp y teléfono de ventas: +1 (786) 984-2167
+- Horario: todos los días de 6:00 a 21:00 (fuera de horario, cargo adicional de $50)
+- Entrega y devolución: aeropuertos de Miami (MIA), Fort Lauderdale (FLL) y Orlando (MCO), hoteles u oficina
+- Idiomas: español e inglés
+
+## Flota y precios por día (desde)
+
+- Compacto (Nissan Versa o similar): $35
+- Mid Size (Kia Forte, Toyota Corolla, Nissan Sentra o similar): $35
+- Full Size (Kia K5, Hyundai Sonata, Nissan Altima o similar): $55
+- SUV (Nissan Kicks, Mitsubishi Outlander, Toyota RAV4, Nissan Rogue o similar): $55
+- SUV Grande (Toyota Highlander o similar): $65
+- Mini Van (Dodge Caravan, Chrysler Pacifica, Kia Sedona o similar): $65
+- Maxi Van (Nissan NV Passenger, 12 pasajeros, o similar): $95
+
+Los precios no incluyen seguro, peajes, impuestos ni otros cargos.
+
+## Requisitos para alquilar
+
+- Edad de 21 a 75 años (de 21 a 24 años, recargo de $12.99 por día)
+- Licencia de conducir vigente, pasaporte o documento de identidad y la confirmación de la reserva
+- Tarjeta de crédito o débito física a nombre del conductor (Visa, Mastercard, Diners Club o Discover)
+- Depósito de garantía de $200 a $500 según el vehículo
+- Seguro obligatorio, contratado con la empresa al recoger el auto
+
+## Páginas
+
+- [Inicio (español)](https://floridarentarapida.com/): flota, cómo funciona, preguntas frecuentes y formulario de reserva
+- [Home (English)](https://floridarentarapida.com/en/): fleet, how it works, FAQ and booking form
+- [Términos y condiciones](https://floridarentarapida.com/terminos.html)
+- [Terms and conditions](https://floridarentarapida.com/en/terms.html)
+- [Política de privacidad](https://floridarentarapida.com/privacidad.html)
+- [Política de cookies](https://floridarentarapida.com/cookies.html)
