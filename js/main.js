@@ -305,6 +305,7 @@
         "*" + TXT.pais + ":* " + f.pais.value,
         "*" + TXT.licencia + ":* " + f.licencia.value
       ].filter(Boolean).map(encodeURIComponent).join("%0A");
+      if (window.medir) window.medir("generate_lead", { categoria: f.categoria.value, entrega: f.entrega.value, dias: dias, pasajeros: +f.pasajeros.value });
       window.open("https://wa.me/" + window.WA_NUMERO + "?text=" + texto, "_blank", "noopener");
       msg.textContent = TXT.abierto;
     });
@@ -318,13 +319,37 @@
   var banner = $("#cookie-banner");
   var leer = function () { try { return localStorage.getItem(KEY); } catch (e) { return null; } };
   var guardar = function (v) { try { localStorage.setItem(KEY, v); } catch (e) {} };
+  /* Google Analytics 4: se carga solo si el visitante acepta las cookies */
+  var GA = window.GA_ID || "", medicionActiva = false;
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
   function cargarMedicion() {
-    /* Ejemplo (desactivado):
-       var s = document.createElement("script");
-       s.src = "https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"; s.async = true;
-       document.head.appendChild(s); */
+    if (!GA || medicionActiva) return;
+    medicionActiva = true; window["ga-disable-" + GA] = false;
+    var s = document.createElement("script");
+    s.src = "https://www.googletagmanager.com/gtag/js?id=" + GA; s.async = true;
+    document.head.appendChild(s);
+    gtag("js", new Date());
+    gtag("config", GA);
   }
-  var elegir = function (v) { guardar(v); if (banner) banner.hidden = true; if (v === "todas") cargarMedicion(); };
+  /* si después elige "Solo necesarias": se apaga la medición y se borran sus cookies */
+  function apagarMedicion() {
+    if (!GA) return;
+    window["ga-disable-" + GA] = true; medicionActiva = false;
+    document.cookie.split(";").forEach(function (c) {
+      var n = c.split("=")[0].trim();
+      if (n.indexOf("_ga") === 0) ["", "; domain=" + location.hostname, "; domain=." + location.hostname.replace(/^www\./, "")].forEach(function (d) {
+        document.cookie = n + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/" + d;
+      });
+    });
+  }
+  /* eventos: cuántas reservas y contactos llegan por WhatsApp (solo cuentan si la medición está activa) */
+  window.medir = function (evento, datos) { if (medicionActiva) gtag("event", evento, datos || {}); };
+  document.addEventListener("click", function (ev) {
+    var a = ev.target.closest && ev.target.closest('a[href*="wa.me"]');
+    if (a) window.medir("contacto_whatsapp", { ubicacion: a.className.indexOf("wa-float") > -1 ? "boton_flotante" : (a.closest("header") ? "encabezado" : "pagina") });
+  });
+  var elegir = function (v) { guardar(v); if (banner) banner.hidden = true; if (v === "todas") cargarMedicion(); else apagarMedicion(); };
   if (banner) {
     var c = leer();
     if (!c) banner.hidden = false; else if (c === "todas") cargarMedicion();
