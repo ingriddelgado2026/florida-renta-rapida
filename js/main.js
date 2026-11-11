@@ -11,7 +11,7 @@
     fechaMal: "Enter a valid date (month/day/year).", fechaPasada: "Choose a date from today on.",
     entrega: "Pick-up", devolucion: "Return", pasajeros: "Passengers", mismo: "same as pick-up",
     abierto: "WhatsApp is open with your request. Just tap send.",
-    saludo: "Hi, I'd like to book a car in Miami.",
+    saludo: "Hi, I'd like to book a car in Florida.",
     nombre: "Name", categoria: "Category", vehiculo: "Vehicle", fecha: "Pick-up date", dias: "Days", pais: "Country", licencia: "Driver's license",
     sugerir: "¿Prefieres ver la página en español?", irA: "Ver en español", cerrar: "Cerrar"
   } : {
@@ -21,7 +21,7 @@
     fechaMal: "Escribe una fecha válida (mes/día/año).", fechaPasada: "Elige una fecha desde hoy.",
     entrega: "Entrega", devolucion: "Devolución", pasajeros: "Pasajeros", mismo: "el mismo lugar de entrega",
     abierto: "Se abrió WhatsApp con tu solicitud. Solo tienes que enviarla.",
-    saludo: "Hola, quiero reservar un auto en Miami.",
+    saludo: "Hola, quiero reservar un auto en Florida.",
     nombre: "Nombre", categoria: "Categoría", vehiculo: "Vehículo", fecha: "Fecha de retiro", dias: "Días", pais: "País", licencia: "Licencia de conducir",
     sugerir: "Prefer to browse in English?", irA: "View in English", cerrar: "Close"
   };
