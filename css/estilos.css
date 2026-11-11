@@ -388,3 +388,32 @@ footer a:hover{color:#fff}
   .reveal,.feat{opacity:1;transform:none}
   .atras{opacity:1}
 }
+
+/* ===== Un auto para cada viaje en 3D (3 autos que giran con el scroll) ===== */
+.giro3{height:420vh;padding:0;position:relative;background:#000}
+.giro3-pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.giro3-lienzo{position:absolute;inset:0;z-index:1;width:100%;height:100%;display:block}
+.giro3 .show-head{position:relative;z-index:3}
+/* capas: palabra grande (0) · video (1) · sombra para leer (2) · textos (3) */
+.giro3-escenas{position:absolute;inset:0}
+.escena{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1.1fr;align-items:center;width:min(var(--max),100% - 32px);margin-inline:auto;pointer-events:none}
+.escena .bigword{left:66%;top:40%;z-index:0;opacity:0;transition:opacity .6s;-webkit-text-stroke:1px rgba(255,255,255,.2)}
+.escena .slide-txt{grid-column:1;position:relative;z-index:3;opacity:0;transform:translateY(34px);transition:opacity .55s,transform .55s}
+.escena.act .bigword{opacity:1}
+.escena.act .slide-txt{opacity:1;transform:none;pointer-events:auto}
+.giro3 .show-dots{position:absolute;left:0;right:0;bottom:24px;z-index:3;padding:0}
+@media (max-width:759px){
+  .giro3{height:380vh}
+  .giro3-pin::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(to bottom,rgba(0,0,0,.85) 0%,rgba(0,0,0,.55) 38%,rgba(0,0,0,0) 52%)}
+  .escena{grid-template-columns:1fr;align-items:start;align-content:start;padding-top:128px;text-align:center}
+  .escena .bigword{left:50%;top:60%;font-size:clamp(4rem,26vw,7rem)}
+  .escena .slide-txt h2{font-size:2rem}
+  .escena .slide-txt p{font-size:.98rem;margin-inline:auto;max-width:34ch}
+  .escena .slide-txt ul{justify-content:center;margin-top:12px}
+  .escena .slide-txt li{font-size:.8rem}
+}
+@media (min-width:760px){
+  .giro3-pin::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+    background:linear-gradient(90deg,rgba(0,0,0,.88) 0%,rgba(0,0,0,.6) 30%,rgba(0,0,0,0) 50%),linear-gradient(to bottom,rgba(0,0,0,.6) 0%,rgba(0,0,0,0) 18%)}
+}
+.giro3.quieto{height:auto}.giro3.quieto .giro3-pin{position:relative}
