@@ -150,11 +150,11 @@
       var foto = $(".ph img", b.closest(".auto"));
       var ir = function () {
         mostrarElegido(b);
-        /* el auto ya está elegido: se pasa directo al paso de fechas y lugar */
-        if (form.irPaso) form.irPaso(1);
+        /* el auto queda elegido en el paso "Tu auto": así pueden revisar cuántos pasajeros son antes de seguir */
+        if (form.irPaso) form.irPaso(0);
         /* en celular se muestra también la vitrina con el auto, que queda justo arriba del formulario */
         irA(window.innerWidth < 900 && eleg ? eleg : form);
-        setTimeout(function () { form.entrega.focus({ preventScroll: true }); }, reduce ? 0 : 800);
+        setTimeout(function () { form.pasajeros.focus({ preventScroll: true }); form.pasajeros.select(); }, reduce ? 0 : 800);
         if (foto) setTimeout(function () { foto.classList.remove("sale"); }, 900);
       };
       if (foto && !reduce) { foto.classList.add("sale"); setTimeout(ir, 380); } else ir();

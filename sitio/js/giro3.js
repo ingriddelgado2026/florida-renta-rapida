@@ -22,9 +22,12 @@
 
   /* Tiempos de cada auto (milisegundos): recorrido de sus imágenes, pausa al final y fundido al siguiente.
      K5 y Pacifica cruzan el estudio y salen; la Outlander llega al centro, enciende las luces y se queda un rato. */
-  var TIEMPO = [[4600, 0, 400], [4600, 0, 400], [3800, 2800, 700]];
+  /* por auto (data-auto), así el orden de las escenas se cambia solo en el HTML */
+  var TIEMPOS = { "k5-izq": [4600, 0, 400], "pacifica-der": [4600, 0, 400], "outlander": [3800, 2800, 700] };
+  var TEXTOS = { "k5-izq": [.06, .78], "pacifica-der": [.06, .78], "outlander": [.05, 1.01] };
+  var TIEMPO = autos.map(function (a) { return TIEMPOS[a] || [4600, 0, 400]; });
   /* parte del recorrido de cada auto en la que se ve su texto */
-  var TEXTO = [[.06, .78], [.06, .78], [.05, 1.01]];
+  var TEXTO = autos.map(function (a) { return TEXTOS[a] || [.06, .78]; });
   var largoDe = function (a) { var t = TIEMPO[a]; return t[0] + t[1] + t[2]; };
 
   var auto = 0, ms = 0;              /* auto actual y tiempo dentro de su tramo */
@@ -57,7 +60,7 @@
   function pintar() {
     if (!listo) return;
     var tm = TIEMPO[auto], f, sig = (auto + 1) % autos.length, mezcla = 0;
-    if (quieto) f = auto === autos.length - 1 ? 1 : .5;
+    if (quieto) f = autos[auto] === "outlander" ? 1 : .5;
     else if (ms < tm[0]) f = mezclaSuave(ms / tm[0]);
     else { f = 1; if (ms > tm[0] + tm[1]) mezcla = Math.min(1, (ms - tm[0] - tm[1]) / tm[2]); }
     var pos = f * (N - 1), n = Math.floor(pos), frac = pos - n;
