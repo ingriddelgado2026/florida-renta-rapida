@@ -390,8 +390,8 @@ footer a:hover{color:#fff}
 }
 
 /* ===== Un auto para cada viaje en 3D (3 autos que giran con el scroll) ===== */
-.giro3{height:420vh;padding:0;position:relative;background:#000}
-.giro3-pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.giro3{padding:0;position:relative;background:#000}
+.giro3-pin{position:relative;height:100vh;height:100svh;min-height:560px;max-height:1000px;overflow:hidden}
 .giro3-lienzo{position:absolute;inset:0;z-index:1;width:100%;height:100%;display:block}
 .giro3 .show-head{position:relative;z-index:3}
 /* capas: palabra grande (0) · video (1) · sombra para leer (2) · textos (3) */
@@ -401,9 +401,17 @@ footer a:hover{color:#fff}
 .escena .slide-txt{grid-column:1;position:relative;z-index:3;opacity:0;transform:translateY(34px);transition:opacity .55s,transform .55s}
 .escena.act .bigword{opacity:1}
 .escena.act .slide-txt{opacity:1;transform:none;pointer-events:auto}
-.giro3 .show-dots{position:absolute;left:0;right:0;bottom:24px;z-index:3;padding:0}
+.giro3 .show-dots{position:absolute;left:0;right:0;bottom:14px;z-index:3;padding:0;display:flex;align-items:center;gap:4px}
+.g3-ctrl button{background:none;border:0;padding:12px 4px;cursor:pointer;display:block;color:#fff}
+.g3-ctrl button:focus-visible{outline:2px solid #fff;outline-offset:2px;border-radius:4px}
+.g3-ctrl i{display:block}
+.g3-pausa{width:32px;height:32px;margin-left:8px;position:relative;opacity:.75}
+.g3-pausa:hover{opacity:1}
+.g3-pausa::before,.g3-pausa::after{content:"";position:absolute;top:11px;width:3px;height:11px;background:currentColor;border-radius:1px}
+.g3-pausa::before{left:12px}.g3-pausa::after{left:18px}
+.g3-pausa.parado::before{left:12px;width:0;height:0;background:none;border-style:solid;border-width:6px 0 6px 10px;border-color:transparent transparent transparent currentColor;border-radius:0;top:10px}
+.g3-pausa.parado::after{display:none}
 @media (max-width:759px){
-  .giro3{height:380vh}
   .giro3-pin::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(to bottom,rgba(0,0,0,.85) 0%,rgba(0,0,0,.55) 38%,rgba(0,0,0,0) 52%)}
   .escena{grid-template-columns:1fr;align-items:start;align-content:start;padding-top:128px;text-align:center}
   .escena .bigword{left:50%;top:60%;font-size:clamp(4rem,26vw,7rem)}
@@ -416,7 +424,7 @@ footer a:hover{color:#fff}
   .giro3-pin::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
     background:linear-gradient(90deg,rgba(0,0,0,.88) 0%,rgba(0,0,0,.6) 30%,rgba(0,0,0,0) 50%),linear-gradient(to bottom,rgba(0,0,0,.6) 0%,rgba(0,0,0,0) 18%)}
 }
-.giro3.quieto{height:auto}.giro3.quieto .giro3-pin{position:relative}
+.giro3.quieto .g3-pausa{display:none}
 
 /* ===== Cómo funciona: conversación de WhatsApp que se escribe con el scroll ===== */
 .chat-sec{height:300vh;padding:0;position:relative}
