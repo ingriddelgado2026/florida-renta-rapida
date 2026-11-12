@@ -1,6 +1,9 @@
 # Florida Renta Rápida
 
-Sitio web de alquiler de autos en Miami (español e inglés).
+Web de alquiler de autos: https://floridarentarapida.com
 
-- Página estática: HTML, CSS y JavaScript sin librerías.
-- Publicada con GitHub Pages.
+- `datos/`: precios, flota, contacto y promoción. Se cambian desde el panel (https://app.pagescms.org).
+- `fuente/`: plantillas y `construir.py`, que arma la web.
+- `sitio/`: imágenes, estilos y scripts; aquí queda la web armada.
+
+Cada vez que se guarda un cambio, GitHub Actions ejecuta `python fuente/construir.py` y publica `sitio/` en GitHub Pages.

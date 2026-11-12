@@ -1,0 +1,10 @@
+{
+  "ventas": "+1 (786) 984-2167",
+  "administracion": "+1 (786) 961-1784",
+  "horario_abre": "6:00",
+  "horario_cierra": "21:00",
+  "cargo_fuera_de_horario": 50,
+  "recargo_conductor_joven": 12.99,
+  "deposito_minimo": 200,
+  "deposito_maximo": 500
+}

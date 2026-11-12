@@ -1,0 +1,116 @@
+{
+  "autos": [
+    {
+      "nombre": "Nissan Versa",
+      "categoria": "compacto",
+      "pasajeros": "4–5",
+      "maletas": 2,
+      "foto": "img/flota/versa.webp"
+    },
+    {
+      "nombre": "Kia Forte",
+      "categoria": "mid",
+      "pasajeros": "4–5",
+      "maletas": 2,
+      "foto": "img/flota/forte.webp"
+    },
+    {
+      "nombre": "Toyota Corolla",
+      "categoria": "mid",
+      "pasajeros": "4–5",
+      "maletas": 2,
+      "foto": "img/flota/corolla.webp"
+    },
+    {
+      "nombre": "Nissan Sentra",
+      "categoria": "mid",
+      "pasajeros": "4–5",
+      "maletas": 2,
+      "foto": "img/flota/sentra.webp"
+    },
+    {
+      "nombre": "Kia K5",
+      "categoria": "full",
+      "pasajeros": "4–5",
+      "maletas": 3,
+      "foto": "img/flota/k5.webp"
+    },
+    {
+      "nombre": "Hyundai Sonata",
+      "categoria": "full",
+      "pasajeros": "4–5",
+      "maletas": 3,
+      "foto": "img/flota/sonata.webp"
+    },
+    {
+      "nombre": "Nissan Altima",
+      "categoria": "full",
+      "pasajeros": "4–5",
+      "maletas": 3,
+      "foto": "img/flota/altima.webp"
+    },
+    {
+      "nombre": "Nissan Kicks",
+      "categoria": "suv",
+      "pasajeros": "5",
+      "maletas": 3,
+      "foto": "img/flota/kicks.webp"
+    },
+    {
+      "nombre": "Mitsubishi Outlander",
+      "categoria": "suv",
+      "pasajeros": "5",
+      "maletas": 4,
+      "foto": "img/flota/outlander.webp"
+    },
+    {
+      "nombre": "Toyota RAV4",
+      "categoria": "suv",
+      "pasajeros": "5",
+      "maletas": 4,
+      "foto": "img/flota/rav4.webp"
+    },
+    {
+      "nombre": "Nissan Rogue",
+      "categoria": "suv",
+      "pasajeros": "5",
+      "maletas": 4,
+      "foto": "img/flota/rogue.webp"
+    },
+    {
+      "nombre": "Toyota Highlander",
+      "categoria": "suvgrande",
+      "pasajeros": "7–8",
+      "maletas": 4,
+      "foto": "img/flota/highlander.webp"
+    },
+    {
+      "nombre": "Dodge Caravan",
+      "categoria": "minivan",
+      "pasajeros": "7–8",
+      "maletas": 4,
+      "foto": "img/flota/caravan.webp"
+    },
+    {
+      "nombre": "Chrysler Pacifica",
+      "categoria": "minivan",
+      "pasajeros": "7–8",
+      "maletas": 4,
+      "foto": "img/flota/pacifica.webp"
+    },
+    {
+      "nombre": "Kia Sedona",
+      "categoria": "minivan",
+      "pasajeros": "7–8",
+      "maletas": 4,
+      "foto": "img/flota/sedona.webp"
+    },
+    {
+      "nombre": "Nissan NV Passenger",
+      "categoria": "maxivan",
+      "pasajeros": "12",
+      "maletas": 6,
+      "foto": "img/flota/nvpassenger.webp"
+    }
+  ]
+}

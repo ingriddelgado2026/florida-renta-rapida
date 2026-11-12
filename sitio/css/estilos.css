@@ -665,3 +665,9 @@ footer a:hover{color:#fff}
 }
 @media (prefers-reduced-motion:reduce){.por-pasos .paso-form.on{animation:none}.form-barra i{transition:none}}
 #elegido{scroll-margin-top:86px}
+
+/* ===== Franja de promoción (se activa desde el panel) ===== */
+.promo{display:flex;width:fit-content;align-items:center;gap:10px;max-width:100%;margin:0 auto 16px;padding:6px 16px 6px 6px;border-radius:999px;background:rgba(0,0,0,.6);border:1px solid rgba(242,54,74,.65);box-shadow:0 10px 30px -12px rgba(212,21,47,.7);color:#fff;text-decoration:none;font-size:.92rem;font-weight:600;line-height:1.3;text-align:left}
+.promo b{flex:none;background:#d4152f;color:#fff;border-radius:999px;padding:5px 11px;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase}
+.promo:hover{border-color:#f2364a}
+@media (max-width:760px){.promo{font-size:.82rem;margin-bottom:12px}}

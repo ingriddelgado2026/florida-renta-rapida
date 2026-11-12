@@ -1,0 +1,9 @@
+{
+  "compacto": 35,
+  "mid": 35,
+  "full": 55,
+  "suv": 55,
+  "suvgrande": 65,
+  "minivan": 65,
+  "maxivan": 95
+}

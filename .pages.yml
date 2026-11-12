@@ -1,0 +1,78 @@
+# Panel de administración de Florida Renta Rápida (Pages CMS: https://app.pagescms.org)
+# Cada sección edita un archivo de datos/. Al guardar, GitHub vuelve a armar la web y la publica sola.
+media:
+  input: sitio/img/flota
+  output: img/flota
+  rename: safe
+  categories: [image]
+
+content:
+  - name: precios
+    label: Precios
+    type: file
+    path: datos/precios.json
+    format: json
+    fields:
+      - { name: compacto, label: "Compacto (USD por día)", type: number, required: true, description: "Nissan Versa o similar" }
+      - { name: mid, label: "Mid Size (USD por día)", type: number, required: true, description: "Kia Forte, Toyota Corolla, Nissan Sentra o similar" }
+      - { name: full, label: "Full Size (USD por día)", type: number, required: true, description: "Kia K5, Hyundai Sonata, Nissan Altima o similar" }
+      - { name: suv, label: "SUV (USD por día)", type: number, required: true, description: "Nissan Kicks, Outlander, RAV4, Rogue o similar" }
+      - { name: suvgrande, label: "SUV Grande (USD por día)", type: number, required: true, description: "Toyota Highlander o similar" }
+      - { name: minivan, label: "Mini Van (USD por día)", type: number, required: true, description: "Dodge Caravan, Chrysler Pacifica, Kia Sedona o similar" }
+      - { name: maxivan, label: "Maxi Van (USD por día)", type: number, required: true, description: "Nissan NV Passenger o similar" }
+
+  - name: flota
+    label: Flota
+    type: file
+    path: datos/flota.json
+    format: json
+    fields:
+      - name: autos
+        label: Autos
+        description: "El orden de esta lista es el orden en la web. La primera mitad va en la fila de arriba y la segunda mitad en la de abajo."
+        type: object
+        list: true
+        fields:
+          - { name: nombre, label: "Nombre del auto", type: string, required: true, description: "Ej.: Toyota RAV4" }
+          - name: categoria
+            label: Categoría
+            type: select
+            required: true
+            description: "El precio sale de la sección Precios, según la categoría."
+            options:
+              values:
+                - { name: compacto, label: Compacto }
+                - { name: mid, label: Mid Size }
+                - { name: full, label: Full Size }
+                - { name: suv, label: SUV }
+                - { name: suvgrande, label: SUV Grande }
+                - { name: minivan, label: Mini Van }
+                - { name: maxivan, label: Maxi Van }
+          - { name: pasajeros, label: Pasajeros, type: string, required: true, description: "Ej.: 5, 4–5 o 7–8" }
+          - { name: maletas, label: Maletas, type: number, required: true }
+          - { name: foto, label: Foto, type: image, required: true, description: "PNG con fondo transparente, el auto de frente-lado (como las fotos actuales). Se convierte sola a WebP." }
+
+  - name: contacto
+    label: Contacto, horario y cargos
+    type: file
+    path: datos/contacto.json
+    format: json
+    fields:
+      - { name: ventas, label: "WhatsApp y teléfono de Ventas", type: string, required: true, description: "Con código de país, ej.: +1 (786) 984-2167. Los botones de WhatsApp usan este número." }
+      - { name: administracion, label: "Teléfono de Administración", type: string, required: true, description: "Ej.: +1 (786) 961-1784" }
+      - { name: horario_abre, label: "Hora de apertura", type: string, required: true, description: "Formato 24 horas, ej.: 6:00" }
+      - { name: horario_cierra, label: "Hora de cierre", type: string, required: true, description: "Formato 24 horas, ej.: 21:00" }
+      - { name: cargo_fuera_de_horario, label: "Cargo fuera de horario (USD)", type: number, required: true }
+      - { name: recargo_conductor_joven, label: "Recargo conductor de 21 a 24 años (USD por día)", type: number, required: true, description: "Ej.: 12.99" }
+      - { name: deposito_minimo, label: "Depósito de garantía mínimo (USD)", type: number, required: true }
+      - { name: deposito_maximo, label: "Depósito de garantía máximo (USD)", type: number, required: true }
+
+  - name: promocion
+    label: Promoción
+    type: file
+    path: datos/promocion.json
+    format: json
+    fields:
+      - { name: activa, label: "Mostrar la promoción en la web", type: boolean, description: "Aparece arriba del título del inicio. Desactívala cuando termine." }
+      - { name: texto_es, label: "Texto en español", type: string, description: "Corto, ej.: 15% de descuento en SUV reservando esta semana" }
+      - { name: texto_en, label: "Texto en inglés", type: string, description: "Ej.: 15% off SUVs when you book this week" }
