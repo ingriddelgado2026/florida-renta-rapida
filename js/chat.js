@@ -47,7 +47,8 @@
     var activo = r.top < window.innerHeight * .5 && r.bottom > window.innerHeight * .5;
     if (activo !== document.body.classList.contains("chat-activo")) document.body.classList.toggle("chat-activo", activo);
     if (r.bottom < -200 || r.top > window.innerHeight + 200) return;
-    if (!fotoLista) { fotoLista = true; [].forEach.call(sec.querySelectorAll("img[data-src]"), function (i) { i.src = i.dataset.src; i.removeAttribute("data-src"); }); }
+    if (!fotoLista) { cel.classList.add("con-fondo"); /* fondo de Miami de noche: se pide recién aquí */
+      fotoLista = true; [].forEach.call(sec.querySelectorAll("img[data-src]"), function (i) { i.src = i.dataset.src; i.removeAttribute("data-src"); }); }
 
     /* la conversación ocupa del 3% al 92% del recorrido */
     var x = (avance() - .03) / .89 * total, k = -1, t = 0, acum = 0;
