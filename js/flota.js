@@ -23,12 +23,12 @@
     var aLaVista = true, cuadro = 0, previo = 0;
 
     /* Cada fila lleva una copia de sus tarjetas detrás, así al terminar empieza de nuevo sin que se note.
-       Las copias no se leen con lector de pantalla ni reciben foco; su botón "Reservar este" usa el original. */
+       Las copias no se leen con lector de pantalla ni reciben foco con Tab, pero sí se pueden tocar: su botón "Reservar este" usa el original. */
     var filas = [].slice.call(sec.querySelectorAll(".fila")).map(function (el, i) {
       var orig = [].slice.call(el.children);
       orig.forEach(function (a) {
         var c = a.cloneNode(true);
-        c.classList.add("clon"); c.setAttribute("aria-hidden", "true"); c.setAttribute("inert", "");
+        c.classList.add("clon"); c.setAttribute("aria-hidden", "true"); /* sin "inert": sus botones tienen que poder tocarse */
         [].forEach.call(c.querySelectorAll("a,button"), function (b) { b.setAttribute("tabindex", "-1"); });
         var bo = a.querySelector("[data-reservar]"), bc = c.querySelector("[data-reservar]");
         if (bo && bc) bc.addEventListener("click", function (ev) { ev.preventDefault(); bo.click(); });
