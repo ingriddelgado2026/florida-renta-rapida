@@ -671,3 +671,15 @@ footer a:hover{color:#fff}
 .promo b{flex:none;background:#d4152f;color:#fff;border-radius:999px;padding:5px 11px;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase}
 .promo:hover{border-color:#f2364a}
 @media (max-width:760px){.promo{font-size:.82rem;margin-bottom:12px}}
+
+/* ===== Textos dinámicos (los prepara main.js al bajar; con "reducir movimiento" quedan quietos) ===== */
+/* 1) títulos: las palabras suben una tras otra */
+.txt-pal .pal{display:inline-block;opacity:0;transform:translateY(.55em);filter:blur(6px);transition:opacity .6s cubic-bezier(.2,.8,.2,1),transform .6s cubic-bezier(.2,.8,.2,1),filter .6s;transition-delay:calc(var(--i) * 70ms)}
+.txt-pal.ver .pal{opacity:1;transform:none;filter:none}
+/* 2) etiquetas: se escriben letra por letra, con cursor */
+.txt-maq .le{opacity:0}
+.txt-maq .le.on{opacity:1}
+.txt-maq .cur{display:inline-block;width:.09em;height:.9em;margin-left:.08em;vertical-align:-.08em;background:currentColor;animation:cursorTxt .7s steps(1) infinite}
+@keyframes cursorTxt{50%{opacity:0}}
+/* 3) cifras: números que cuentan solos */
+.stats b{font-variant-numeric:tabular-nums}

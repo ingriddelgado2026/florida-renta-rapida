@@ -524,11 +524,103 @@
       ciclo();
     }).catch(function () {});
   };
-  var empezar = function () { setTimeout(function () { if (window.requestIdleCallback) requestIdleCallback(preparar, { timeout: 1500 }); else preparar(); }, 2500); };
-  if (document.readyState === "complete") empezar(); else window.addEventListener("load", empezar);
+  /* Empieza con el primer movimiento del visitante (mouse, dedo o scroll) o, si no se mueve, 8 s después de cargar:
+     así la medición de velocidad de Google (que no se mueve y termina antes) ve la página quieta */
+  var EVH = ["pointermove", "touchstart", "scroll", "wheel", "keydown"], iniciado = false, espera = 0;
+  var empezar = function () {
+    if (iniciado) return; iniciado = true; clearTimeout(espera);
+    EVH.forEach(function (n) { window.removeEventListener(n, empezar); });
+    setTimeout(function () { if (window.requestIdleCallback) requestIdleCallback(preparar, { timeout: 1500 }); else preparar(); }, 600);
+  };
+  var alCargar = function () {
+    EVH.forEach(function (n) { window.addEventListener(n, empezar, { passive: true }); });
+    espera = setTimeout(empezar, 8000);
+  };
+  if (document.readyState === "complete") alCargar(); else window.addEventListener("load", alCargar);
 
   if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { aLaVista = es[0].isIntersecting; }).observe(stage);
   var t; window.addEventListener("resize", function () { clearTimeout(t); t = setTimeout(function () {
     if (!listo) return; els.forEach(function (e) { e.getAnimations().forEach(function (a) { a.finish(); }); }); medir(); colocar();
   }, 150); });
+})();
+
+/* ===== Textos dinámicos =====
+   1) Títulos de sección: las palabras suben una tras otra al llegar a la sección.
+   2) Etiquetas rojas: se escriben letra por letra, como en una máquina de escribir.
+   3) Cifras (16 años, 24/7, 100%): los números cuentan desde 0.
+   Se prepara después del primer movimiento del visitante y solo en textos que todavía no se ven,
+   así nada parpadea ni frena la carga. El texto sigue siendo texto: Google y los lectores de pantalla lo leen igual. */
+(function () {
+  "use strict";
+  if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var hecho = false, EV = ["scroll", "wheel", "touchmove", "keydown"];
+  var abajo = function (el) { return el.getBoundingClientRect().top > window.innerHeight; };
+  var mirar = function (el, fn) {
+    var io = new IntersectionObserver(function (es) {
+      if (es[0].isIntersecting) { io.disconnect(); fn(); }
+    }, { rootMargin: "0px 0px -12% 0px", threshold: .4 });
+    io.observe(el);
+  };
+
+  var palabras = function (h) {
+    var i = 0;
+    [].slice.call(h.childNodes).forEach(function (n) {
+      if (n.nodeType !== 3) return;
+      var trozos = n.textContent.split(/(\s+)/), frag = document.createDocumentFragment();
+      trozos.forEach(function (t) {
+        if (!t) return;
+        if (/^\s+$/.test(t)) { frag.appendChild(document.createTextNode(t)); return; }
+        var s = document.createElement("span"); s.className = "pal"; s.style.setProperty("--i", i++); s.textContent = t; frag.appendChild(s);
+      });
+      h.replaceChild(frag, n);
+    });
+    h.classList.add("txt-pal");
+    mirar(h, function () { h.classList.add("ver"); });
+  };
+
+  var maquina = function (e) {
+    var texto = e.textContent;
+    /* para lectores de pantalla queda la frase entera; las letras sueltas se ocultan para ellos */
+    e.textContent = "";
+    var lector = document.createElement("span"); lector.className = "vh"; lector.textContent = texto;
+    var vis = document.createElement("span"); vis.setAttribute("aria-hidden", "true");
+    var letras = texto.split("").map(function (c) { var s = document.createElement("span"); s.className = "le"; s.textContent = c; vis.appendChild(s); return s; });
+    e.appendChild(lector); e.appendChild(vis); e.classList.add("txt-maq");
+    mirar(e, function () {
+      /* el cursor avanza detrás de la última letra escrita */
+      var cur = document.createElement("span"); cur.className = "cur"; vis.insertBefore(cur, letras[0]);
+      var k = 0, paso = Math.max(28, Math.min(55, 900 / letras.length));
+      var t = setInterval(function () {
+        if (k < letras.length) { letras[k].classList.add("on"); vis.insertBefore(cur, letras[k].nextSibling); k++; return; }
+        clearInterval(t); setTimeout(function () { cur.remove(); }, 900);
+      }, paso);
+    });
+  };
+
+  var contar = function (b) {
+    var m = /^(\d+)(.*)$/.exec(b.textContent.trim()); if (!m) return;
+    var fin = +m[1], resto = m[2];
+    mirar(b, function () {
+      var t0 = performance.now(), dur = 1400;
+      var f = function (ahora) {
+        var p = Math.min(1, (ahora - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+        b.textContent = Math.round(fin * e) + resto;
+        if (p < 1) requestAnimationFrame(f);
+      };
+      b.textContent = "0" + resto;
+      requestAnimationFrame(f);
+    });
+  };
+
+  var preparar = function () {
+    [].forEach.call(document.querySelectorAll("section:not(.hero):not(.giro3) h2"), function (h) { if (abajo(h)) palabras(h); });
+    [].forEach.call(document.querySelectorAll("section:not(.hero) .eyebrow"), function (e) { if (abajo(e) && !e.children.length) maquina(e); });
+    [].forEach.call(document.querySelectorAll(".stats b"), function (b) { if (abajo(b)) contar(b); });
+  };
+  var arrancar = function (e) {
+    if (hecho || (e && e.type === "scroll" && window.scrollY < 10)) return;
+    hecho = true; EV.forEach(function (n) { window.removeEventListener(n, arrancar); });
+    if (window.requestIdleCallback) requestIdleCallback(preparar, { timeout: 400 }); else setTimeout(preparar, 30);
+  };
+  EV.forEach(function (n) { window.addEventListener(n, arrancar, { passive: true }); });
 })();
