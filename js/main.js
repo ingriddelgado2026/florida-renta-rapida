@@ -453,3 +453,82 @@
     });
   }
 })();
+
+/* ===== Inicio: los 3 autos se turnan para pasar adelante =====
+   Empieza unos segundos después de que la página terminó de cargar (no afecta la velocidad).
+   El de la derecha avanza al centro, el del centro se va a la izquierda y el de la izquierda pasa
+   por detrás a la derecha. Para que se vean nítidos adelante, se usan las fotos grandes de la flota. */
+(function () {
+  "use strict";
+  var stage = document.querySelector(".hero .stage");
+  if (!stage || !Element.prototype.animate || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var carDiv = stage.querySelector(".car"), ai = stage.querySelector(".atras-i"), ad = stage.querySelector(".atras-d");
+  if (!carDiv || !ai || !ad) return;
+  var raiz = (ai.getAttribute("src") || "").indexOf("../") === 0 ? "../" : "";
+  var els = [carDiv, ai, ad];             /* Rogue, RAV4, Outlander */
+  var lugar = ["f", "i", "d"];            /* f = adelante, i = atrás izquierda, d = atrás derecha */
+  var sigue = { d: "f", f: "i", i: "d" };
+  var O = [], S = {}, aLaVista = true, ocupado = false, listo = false, reloj = 0;
+  var DUR = 1300, PAUSA = 4200;
+
+  var medir = function () {
+    els.forEach(function (e, k) { O[k] = { x: e.offsetLeft, y: e.offsetTop, w: e.offsetWidth, h: e.offsetHeight }; });
+    S.f = O[0]; S.i = O[1]; S.d = O[2];  /* cada lugar tiene el tamaño del auto que estaba ahí al cargar */
+  };
+  /* transformación para poner el auto k en el lugar s: mismo ancho que el lugar y apoyado en el piso.
+     El lugar de la izquierda va en espejo (el auto mira hacia afuera, como en la foto original). */
+  var pos = function (k, s) {
+    /* la foto de la Rogue tiene más margen que las otras dos: se compensa para que los tres se vean del mismo tamaño */
+    var aj = k === 0 ? (s === "f" ? 1 : 1.07) : (s === "f" ? .93 : 1);
+    var o = O[k], t = S[s], w = t.w * aj, esc = w / o.w;
+    var tx = t.x + (t.w - w) / 2 - o.x, ty = (t.y + t.h) - (o.y + o.h * esc);
+    return s === "i" ? "translate(" + (tx + w).toFixed(1) + "px," + ty.toFixed(1) + "px) scale(" + (-esc).toFixed(4) + "," + esc.toFixed(4) + ")"
+                     : "translate(" + tx.toFixed(1) + "px," + ty.toFixed(1) + "px) scale(" + esc.toFixed(4) + ")";
+  };
+  var capa = function (s) { return s === "f" ? 2 : 1; };
+  var colocar = function () { els.forEach(function (e, k) { e.style.transform = pos(k, lugar[k]); e.style.zIndex = capa(lugar[k]); }); };
+
+  var girar = function () {
+    if (ocupado || !aLaVista || document.hidden) return;
+    ocupado = true;
+    var fin = 0;
+    els.forEach(function (e, k) {
+      var de = lugar[k], a = sigue[de], t0 = pos(k, de), t1 = pos(k, a);
+      /* el que pasa adelante va por encima de todos durante el movimiento */
+      e.style.zIndex = a === "f" ? 3 : (de === "f" ? 2 : 1);
+      /* entrar o salir del lugar en espejo: se desvanece y aparece en su nuevo lugar (sin "voltearse") */
+      var cambiaEspejo = (de === "i") !== (a === "i");
+      var kf = cambiaEspejo
+        ? [{ transform: t0, opacity: 1 }, { transform: t0, opacity: 0, offset: .38 }, { transform: t1, opacity: 0, offset: .62 }, { transform: t1, opacity: 1 }]
+        : [{ transform: t0 }, { transform: t1 }];
+      var an = e.animate(kf, { duration: DUR, easing: "cubic-bezier(.6,0,.2,1)", fill: "forwards" });
+      an.onfinish = function () {
+        e.style.transform = t1; e.style.zIndex = capa(a); an.cancel();
+        if (++fin === els.length) ocupado = false;
+      };
+      lugar[k] = a;
+    });
+  };
+  var ciclo = function () { clearTimeout(reloj); reloj = setTimeout(function () { girar(); ciclo(); }, PAUSA + DUR); };
+
+  var preparar = function () {
+    /* fotos grandes de la RAV4 y la Outlander (las de atrás son pequeñas y se verían borrosas adelante) */
+    var cargar = function (img, nombre) {
+      var n = new Image(); n.src = raiz + "img/flota/" + nombre + ".webp";
+      return (n.decode ? n.decode() : Promise.resolve()).then(function () { return n.src; });
+    };
+    Promise.all([cargar(ai, "rav4"), cargar(ad, "outlander")]).then(function (src) {
+      els.forEach(function (e) { e.style.animation = "none"; e.style.opacity = "1"; e.style.transformOrigin = "0 0"; });
+      [ai, ad].forEach(function (img, i) { img.removeAttribute("srcset"); img.removeAttribute("sizes"); img.src = src[i]; });
+      medir(); colocar(); listo = true;
+      ciclo();
+    }).catch(function () {});
+  };
+  var empezar = function () { setTimeout(function () { if (window.requestIdleCallback) requestIdleCallback(preparar, { timeout: 1500 }); else preparar(); }, 2500); };
+  if (document.readyState === "complete") empezar(); else window.addEventListener("load", empezar);
+
+  if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { aLaVista = es[0].isIntersecting; }).observe(stage);
+  var t; window.addEventListener("resize", function () { clearTimeout(t); t = setTimeout(function () {
+    if (!listo) return; els.forEach(function (e) { e.getAnimations().forEach(function (a) { a.finish(); }); }); medir(); colocar();
+  }, 150); });
+})();
