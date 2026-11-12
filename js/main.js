@@ -28,6 +28,12 @@
   var $ = function (s, c) { return (c || document).querySelector(s); };
   var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
 
+  /* Navegadores internos de Instagram, Facebook, TikTok, etc. (al abrir el link de la bio):
+     a veces no abren pestañas nuevas, así que ahí WhatsApp se abre en la misma pestaña */
+  var enApp = /Instagram|FBAN|FBAV|FB_IAB|FBIOS|musical_ly|TikTok|BytedanceWebview|trill_|Line\/|Snapchat|Twitter/i.test(navigator.userAgent);
+  if (enApp) $$('a[target="_blank"]').forEach(function (a) { if (/wa\.me|whatsapp/.test(a.href)) a.removeAttribute("target"); });
+  var abrirWA = function (url) { if (enApp) location.href = url; else window.open(url, "_blank", "noopener"); };
+
   /* Año del pie de página */
   var y = $("#year"); if (y) y.textContent = new Date().getFullYear();
 
@@ -306,7 +312,7 @@
         "*" + TXT.licencia + ":* " + f.licencia.value
       ].filter(Boolean).map(encodeURIComponent).join("%0A");
       if (window.medir) window.medir("generate_lead", { categoria: f.categoria.value, entrega: f.entrega.value, dias: dias, pasajeros: +f.pasajeros.value });
-      window.open("https://wa.me/" + window.WA_NUMERO + "?text=" + texto, "_blank", "noopener");
+      abrirWA("https://wa.me/" + window.WA_NUMERO + "?text=" + texto);
       msg.textContent = TXT.abierto;
     });
   }

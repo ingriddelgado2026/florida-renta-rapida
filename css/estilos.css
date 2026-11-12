@@ -524,9 +524,14 @@ footer a:hover{color:#fff}
   .msg{display:block;animation:none}.msg.escribe{display:none}
 }
 
-/* ===== Flota en dos filas que se deslizan con el scroll ===== */
-#flota.flota-desliza{height:250vh;padding:0;position:relative;content-visibility:visible}
-.flota-pin{position:sticky;top:0;height:100vh;height:100svh;display:flex;flex-direction:column;justify-content:center;gap:14px;padding:80px 0 14px;overflow:hidden}
+/* ===== Flota en dos filas que avanzan solas (en bucle) y se arrastran con el dedo o el mouse ===== */
+#flota.flota-desliza{padding:104px 0 72px;position:relative;content-visibility:visible}
+.flota-pin{display:flex;flex-direction:column;gap:14px;overflow:hidden}
+.fila{touch-action:pan-y;cursor:grab;-webkit-user-select:none;user-select:none}
+.fila.arrastra{cursor:grabbing}
+.fila img{-webkit-user-drag:none}
+.filtrado .fila{cursor:auto;-webkit-user-select:auto;user-select:auto}
+.filtrado .auto.clon{display:none!important}
 .flota-desliza .head{margin-bottom:6px}
 .flota-desliza .head h2{margin-bottom:.15em}
 .flota-desliza .head .lead{display:none}
@@ -575,8 +580,8 @@ footer a:hover{color:#fff}
 .flota-desliza.filtrado[data-n="1"] .auto .precio b{font-size:2.6rem}
 .flota-desliza.filtrado[data-n="1"] .auto .precio{margin-top:6px}
 @media (max-width:760px){
-  #flota.flota-desliza{height:270vh}
-  .flota-pin{padding:70px 0 10px;gap:10px}
+  #flota.flota-desliza{padding:84px 0 56px}
+  .flota-pin{gap:10px}
   .flota-desliza .head h2{font-size:1.75rem}
   .flota-desliza .head .eyebrow{margin-bottom:.3rem}
   .flota-desliza .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding:0 16px}
