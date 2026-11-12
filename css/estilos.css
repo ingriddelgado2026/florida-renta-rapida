@@ -35,8 +35,8 @@ p a,li a{text-decoration:underline;text-underline-offset:3px;text-decoration-col
 h1,h2,h3{font-family:var(--font-title);line-height:.98;margin:0 0 .45em;letter-spacing:.005em;text-transform:uppercase}
 h2{font-family:var(--font);font-size:clamp(2.1rem,4.6vw,3.5rem);font-weight:400;text-transform:none;letter-spacing:-.025em;line-height:1.06}
 h3{font-weight:700;letter-spacing:.02em}
-.eyebrow{display:inline-block;font-family:var(--font);font-size:.76rem;font-weight:400;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-bottom:.8rem}
-.eyebrow::before{content:"";display:inline-block;width:26px;height:2px;background:var(--red);vertical-align:middle;margin:-2px 12px 0 0}
+/* etiqueta sobre los títulos: letra de la marca, en rojo, sin raya */
+.eyebrow{display:inline-block;font-family:var(--font-title);font-size:1.05rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--red);margin-bottom:.5rem}
 .lead{color:var(--muted);font-size:1.08rem;max-width:60ch}
 section{padding:136px 0}
 
