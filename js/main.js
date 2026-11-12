@@ -13,6 +13,7 @@
     abierto: "WhatsApp is open with your request. Just tap send.",
     saludo: "Hi, I'd like to book a car in Florida.",
     nombre: "Name", categoria: "Category", vehiculo: "Vehicle", fecha: "Pick-up date", dias: "Days", pais: "Country", licencia: "Driver's license",
+    similar: "or similar", tuAuto: "Your selected car",
     sugerir: "¿Prefieres ver la página en español?", irA: "Ver en español", cerrar: "Cerrar"
   } : {
     faltan: "Completa los campos y acepta la política de privacidad.",
@@ -23,6 +24,7 @@
     abierto: "Se abrió WhatsApp con tu solicitud. Solo tienes que enviarla.",
     saludo: "Hola, quiero reservar un auto en Florida.",
     nombre: "Nombre", categoria: "Categoría", vehiculo: "Vehículo", fecha: "Fecha de retiro", dias: "Días", pais: "País", licencia: "Licencia de conducir",
+    similar: "o similar", tuAuto: "Tu auto elegido",
     sugerir: "Prefer to browse in English?", irA: "View in English", cerrar: "Close"
   };
   var $ = function (s, c) { return (c || document).querySelector(s); };
@@ -121,18 +123,22 @@
     if (!eleg) return;
     $("img", eleg).src = b.dataset.img;
     $("img", eleg).alt = b.dataset.reservar;
+    $("small", eleg).textContent = TXT.tuAuto;
     $(".elegido-nombre", eleg).textContent = b.dataset.reservar;
-    $(".elegido-cat", eleg).textContent = b.dataset.cat;
+    $(".elegido-cat", eleg).textContent = b.dataset.cat + " · " + TXT.similar;
     $(".elegido-precio", eleg).innerHTML = TXT.desde + " <b>$" + b.dataset.precio + "</b> /" + TXT.dia;
     eleg.dataset.cat = b.dataset.cat; eleg.dataset.auto = b.dataset.reservar;
     eleg.hidden = false;
     eleg.classList.remove("llega"); void eleg.offsetWidth;
     if (!reduce) setTimeout(function () { eleg.classList.add("llega"); }, 250);
   };
-  /* si el visitante cambia la categoría o el vehículo a mano, se quita la vitrina */
+  /* si el visitante elige otra categoría en el formulario, la vitrina muestra un auto de esa categoría */
   if (form && eleg) {
-    form.categoria.addEventListener("change", function () { if (form.categoria.value !== eleg.dataset.cat) eleg.hidden = true; });
-    form.vehiculo.addEventListener("input", function () { if (form.vehiculo.value !== eleg.dataset.auto) eleg.hidden = true; });
+    form.categoria.addEventListener("change", function () {
+      if (form.categoria.value === eleg.dataset.cat) return;
+      var b = $$("[data-reservar]").filter(function (x) { return x.dataset.cat === form.categoria.value && !x.closest(".clon"); })[0];
+      if (b) mostrarElegido(b);
+    });
   }
   $$("[data-reservar]").forEach(function (b) {
     b.addEventListener("click", function (ev) {
@@ -144,8 +150,11 @@
       var foto = $(".ph img", b.closest(".auto"));
       var ir = function () {
         mostrarElegido(b);
-        irA(form);
-        setTimeout(function () { form.nombre.focus({ preventScroll: true }); }, reduce ? 0 : 800);
+        /* el auto ya está elegido: se pasa directo al paso de fechas y lugar */
+        if (form.irPaso) form.irPaso(1);
+        /* en celular se muestra también la vitrina con el auto, que queda justo arriba del formulario */
+        irA(window.innerWidth < 900 && eleg ? eleg : form);
+        setTimeout(function () { form.entrega.focus({ preventScroll: true }); }, reduce ? 0 : 800);
         if (foto) setTimeout(function () { foto.classList.remove("sale"); }, 900);
       };
       if (foto && !reduce) { foto.classList.add("sale"); setTimeout(ir, 380); } else ir();
@@ -286,17 +295,65 @@
     /* fecha en el formato de EE. UU. en los dos idiomas: 11/20/2026 */
     var fmt = function (v) { var p = v.split("-"); return p[1] + "/" + p[2] + "/" + p[0]; };
     var lugar = function (sel, det) { return sel.value + (det.value ? " (" + det.value + ")" : ""); };
+    /* ===== Formulario en 3 pasos: Tu auto · Fechas y lugar · Tus datos ===== */
+    var pasosF = $$(".paso-form", form), marcas = $$(".form-pasos li", form), barra = $(".form-barra i", form), actualF = 0;
+    var msgF = $("#form-msg"), msgInicial = msgF ? msgF.textContent : "";
+    var camposDe = function (n) {
+      return $$("input,select", pasosF[n]).filter(function (c) { return c.type !== "date" && !c.closest("[hidden]"); });
+    };
+    var fechasBien = function () {
+      var f = form.elements;
+      if (!f.fecha.value || !f.fecha_dev.value) return true;
+      return new Date(f.fecha_dev.value + "T" + f.hora_dev.value) > new Date(f.fecha.value + "T" + f.hora.value);
+    };
+    var pasoValido = function (n) {
+      var mal = camposDe(n).filter(function (c) { return !c.checkValidity(); })[0];
+      if (mal) { mal.reportValidity(); if (msgF) msgF.textContent = TXT.faltan; return false; }
+      if (n === 1 && !fechasBien()) { if (msgF) msgF.textContent = TXT.fechas; form.fecha_dev_txt.focus(); return false; }
+      return true;
+    };
+    var irPaso = function (n, enfocar) {
+      if (!pasosF.length) return;
+      actualF = n;
+      pasosF.forEach(function (p, i) { p.classList.toggle("on", i === n); });
+      marcas.forEach(function (li, i) {
+        li.classList.toggle("on", i === n); li.classList.toggle("hecho", i < n);
+        if (i === n) li.setAttribute("aria-current", "step"); else li.removeAttribute("aria-current");
+      });
+      if (barra) barra.style.width = ((n + 1) / pasosF.length * 100).toFixed(2) + "%";
+      if (msgF && msgF.textContent !== msgInicial) msgF.textContent = msgInicial;
+      /* si el inicio del formulario quedó arriba de la pantalla, se vuelve a mostrar */
+      var r = form.getBoundingClientRect();
+      if (enfocar && r.top < 70) window.scrollTo({ top: r.top + window.scrollY - 86, behavior: reduce ? "auto" : "smooth" });
+      if (enfocar) { var c = camposDe(n)[0]; if (c) setTimeout(function () { c.focus({ preventScroll: true }); }, 60); }
+    };
+    form.irPaso = irPaso;
+    $$("[data-sigue]", form).forEach(function (b) { b.addEventListener("click", function () { if (pasoValido(actualF)) irPaso(actualF + 1, true); }); });
+    $$("[data-atras]", form).forEach(function (b) { b.addEventListener("click", function () { irPaso(Math.max(0, actualF - 1), true); }); });
+    /* la barra de pasos: se puede volver atrás, y avanzar solo si lo anterior está completo */
+    $$("[data-ir]", form).forEach(function (b) { b.addEventListener("click", function () {
+      var n = +b.dataset.ir;
+      if (n <= actualF) { irPaso(n, true); return; }
+      for (var k = actualF; k < n; k++) { if (!pasoValido(k)) { irPaso(k); pasoValido(k); return; } }
+      irPaso(n, true);
+    }); });
+
     form.addEventListener("submit", function (ev) {
       ev.preventDefault();
       var msg = $("#form-msg");
+      /* Enter en un paso intermedio: pasa al siguiente en vez de enviar */
+      if (pasosF.length && actualF < pasosF.length - 1) { if (pasoValido(actualF)) irPaso(actualF + 1, true); return; }
       if (!form.checkValidity()) {
-        form.reportValidity();
+        /* lleva al paso donde está el primer dato que falta */
+        var mal = $$("input,select", form).filter(function (c) { return c.type !== "date" && !c.checkValidity(); })[0];
+        var p = mal && mal.closest(".paso-form");
+        if (p) { irPaso(pasosF.indexOf(p)); setTimeout(function () { mal.reportValidity(); }, 50); } else form.reportValidity();
         msg.textContent = TXT.faltan;
         return;
       }
       var f = form.elements;
       var ini = new Date(f.fecha.value + "T" + f.hora.value), fin = new Date(f.fecha_dev.value + "T" + f.hora_dev.value);
-      if (!(fin > ini)) { msg.textContent = TXT.fechas; f.fecha_dev_txt.focus(); return; }
+      if (!(fin > ini)) { irPaso(1); msg.textContent = TXT.fechas; f.fecha_dev_txt.focus(); return; }
       var dias = Math.max(1, Math.ceil((fin - ini) / 864e5));
       var dev = f.devolucion.selectedIndex === 0 ? TXT.mismo : lugar(f.devolucion, f.devolucion_detalle);
       var texto = [

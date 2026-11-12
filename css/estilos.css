@@ -605,3 +605,63 @@ footer a:hover{color:#fff}
   .filtrado .flota-desliza .nota-precio,.flota-desliza.filtrado .nota-precio{display:block}
 }
 .flota-desliza .auto[hidden]{display:none!important}
+
+/* ===== Reserva: auto y sellos a la izquierda, formulario iluminado en 3 pasos ===== */
+.vh{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.reserva .box{align-items:start}
+.reserva-izq{display:flex;flex-direction:column;gap:22px}
+.reserva-izq .lead{margin-bottom:0}
+.reserva .elegido{grid-template-columns:1fr;gap:0;padding:0;overflow:hidden;border-color:rgba(212,21,47,.35);background:#0b0b0e}
+.reserva .elegido-ph{border-radius:0;aspect-ratio:16/8}
+.reserva .elegido-ph img{width:62%;bottom:15%}
+.reserva .elegido-txt{display:grid;grid-template-columns:1fr auto;align-items:end;column-gap:16px;padding:14px 18px 16px}
+.reserva .elegido-txt small,.reserva .elegido-nombre,.reserva .elegido-cat{grid-column:1}
+.reserva .elegido-precio{grid-column:2;grid-row:1/3;text-align:right;align-self:center}
+.reserva .elegido-cambiar{grid-column:2;grid-row:3;margin:0;justify-self:end}
+.sellos{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.sellos li{display:flex;gap:10px;align-items:flex-start;padding:12px;border:1px solid var(--line);border-radius:12px;background:#0b0b0e;font-size:.8rem;color:var(--muted);line-height:1.35}
+.sellos svg{width:22px;height:22px;flex:none;color:#f2364a;margin-top:1px}
+.sellos b{display:block;color:var(--text);font-size:.88rem;margin-bottom:2px}
+/* tarjeta del formulario: como iluminada en el estudio */
+.reserva .form{position:relative;align-content:start;border-color:rgba(212,21,47,.55);
+  background:radial-gradient(120% 55% at 50% 0%,rgba(212,21,47,.16),rgba(212,21,47,0) 62%),var(--card);
+  box-shadow:0 0 0 1px rgba(212,21,47,.18),0 30px 90px -30px rgba(212,21,47,.55)}
+.reserva .form::before{content:"";position:absolute;left:12%;right:12%;top:-1px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#f2364a,transparent)}
+/* pasos */
+.form-progreso{display:grid;gap:12px;margin-bottom:6px}
+.form-pasos{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.form-pasos button{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:8px;width:100%;cursor:pointer;color:var(--muted);font-size:.85rem;font-weight:600;padding:4px 0}
+.form-pasos button:focus-visible{outline:2px solid #fff;outline-offset:3px;border-radius:6px}
+.form-pasos b{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-family:var(--font-title);font-size:.95rem;background:#22222b;color:var(--soft);transition:background .3s,color .3s}
+.form-pasos .on button{color:#fff}
+.form-pasos .on b,.form-pasos .hecho b{background:var(--accent);color:#fff}
+.form-barra{height:4px;border-radius:4px;background:#22222b;overflow:hidden}
+.form-barra i{display:block;height:100%;width:33.34%;border-radius:4px;background:linear-gradient(90deg,var(--accent),#f2364a);transition:width .45s cubic-bezier(.2,.8,.2,1)}
+.paso-form{border:0;padding:0;margin:0;min-width:0;grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.por-pasos .paso-form:not(.on){display:none}
+.por-pasos .paso-form.on{animation:pasoEntra .4s cubic-bezier(.2,.8,.2,1)}
+@keyframes pasoEntra{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+.form-nav{display:flex;gap:10px;justify-content:flex-end;margin-top:4px}
+.form-nav .btn{width:auto;flex:1;max-width:260px}
+.form-nav .btn-wa{max-width:none;flex:2}
+.form-nav .btn-ghost{flex:0 0 auto}
+#form-msg{grid-column:1/-1;margin:0}
+@media (max-width:899px){
+  .reserva-izq{gap:16px}
+  .reserva .elegido{grid-template-columns:44% 1fr;align-items:center}
+  .reserva .elegido-ph{aspect-ratio:auto;width:100%;height:100%;min-height:118px}
+  .reserva .elegido-ph img{width:80%}
+  .reserva .elegido-txt{display:flex;padding:10px 12px;min-width:0;align-items:flex-start;text-align:left}
+  .reserva .elegido-nombre{font-size:1.15rem}
+  .reserva .elegido-precio{text-align:left}
+  .reserva .elegido-cambiar{justify-self:start;margin-top:4px}
+  .sellos{grid-template-columns:1fr 1fr 1fr;gap:6px}
+  .sellos li{flex-direction:column;align-items:center;text-align:center;gap:6px;padding:10px 6px;font-size:.72rem}
+  .sellos li span{font-size:0}
+  .sellos b{font-size:.78rem;margin:0}
+  .paso-form{grid-template-columns:1fr;gap:14px}
+  .form-pasos button{flex-direction:column;gap:4px;font-size:.75rem;text-align:center}
+  .form-nav .btn{max-width:none;padding:.85em 1.1em}
+}
+@media (prefers-reduced-motion:reduce){.por-pasos .paso-form.on{animation:none}.form-barra i{transition:none}}
+#elegido{scroll-margin-top:86px}
